@@ -15,8 +15,12 @@ class TasksController < ApplicationController
 
   def create
     @task = Task.new(task_params)
-    @task.save
-    redirect_to task_path(@task)
+
+    if @task.save
+      redirect_to task_path(@task), notice: "Task successfully added! 📝"
+    else
+      render :new, status: :unprocessable_entity
+    end
   end
 
   def edit
@@ -31,8 +35,13 @@ class TasksController < ApplicationController
 
   def destroy
     @task = Task.find(params[:id])
-    @task.destroy
-    redirect_to tasks_path, status: :see_other
+
+    if @task.user_id == current_user.id
+      @task.destroy
+      redirect_to tasks_path, notice: "Task successfully deleted! 📋"
+    else
+      redirect_to tasks_path, alert: "You don't have permission to delete this task."
+    end
   end
 
   private
