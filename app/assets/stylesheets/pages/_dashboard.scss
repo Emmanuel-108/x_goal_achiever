@@ -1,0 +1,62 @@
+.dashboard-page {
+  background-color: #e6f0ff;
+  min-height: 100vh;
+  padding: 20px;
+}
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+h1, h2, h3 {
+  color: #112D4E;
+}
+
+.top-section {
+  display: flex;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.statistics-card,
+.task-form,
+.recent-tasks {
+  background-color: #DBE2EF;
+  border: 2px solid #112D4E;
+  padding: 20px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  flex: 1;
+}
+
+.statistics-box {
+  background-color: white;
+  padding: 20px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
+.graph-placeholder {
+  height: 150px;
+  background: repeating-linear-gradient(
+    to right,
+    red 0,
+    red 2px,
+    transparent 2px,
+    transparent 10px
+  );
+  margin: 20px 0;
+}
+
+.btn {
+  background-color: #112D4E;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+
+  &:hover{
+    background-color: #1f5088;
+    scale: 1.075;
+    color: white;
+  }
+
+}
