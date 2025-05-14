@@ -15,26 +15,25 @@
       <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
 
 
-        <li class="nav-item">
-          <a href="#" class="nav-link">Dashboard</a>
-        </li>
-
-        <li class="nav-item">
-          <a href="#" class="nav-link">Tutorial</a>
-        </li>
-
-        <li class="nav-item">
-          <a href="#" class="nav-link">Contact Us</a>
-        </li>
-
         <% if user_signed_in? %>
+
+          <li class="nav-item">
+            <%= link_to "Dashboard", tasks_path, class:"nav-link" %>
+          </li>
+
+          <li class="nav-item">
+            <%= link_to "Tutorial", tutorial_path, class:"nav-link" %>
+          </li>
+
+          <li class="nav-item">
+            <%= link_to "Contact Us", contact_path, class:"nav-link" %>
+          </li>
 
           <li class="nav-item">
             <a href="#" class="nav-link" title="Notifications">
               <i class="fas fa-bell"></i>
             </a>
           </li>
-
 
           <li class="nav-item dropdown">
             <a href="#" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
