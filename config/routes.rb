@@ -16,4 +16,6 @@ Rails.application.routes.draw do
   resources :subtasks do
     resources :statistics, only: [:index, :new, :create, :edit, :update ]
   end
+
+  get 'contact', to: 'pages#contact'
 end
