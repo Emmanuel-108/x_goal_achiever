@@ -37,13 +37,13 @@ h1, h2, h3 {
 
 .graph-placeholder {
   height: 150px;
-  background: repeating-linear-gradient(
-    to right,
-    red 0,
-    red 2px,
-    transparent 2px,
-    transparent 10px
-  );
+  // background: repeating-linear-gradient(
+  //   to right,
+  //   red 0,
+  //   red 2px,
+  //   transparent 2px,
+  //   transparent 10px
+  // );
   margin: 20px 0;
 }
 
@@ -52,11 +52,14 @@ h1, h2, h3 {
   color: white;
   padding: 8px 16px;
   border: none;
+  text-align: center;
+  transition-duration: 0.4s;
+  text-decoration: none;
+  overflow: hidden;
 
   &:hover{
     background-color: #1f5088;
     scale: 1.075;
     color: white;
   }
-
 }
