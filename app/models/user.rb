@@ -6,9 +6,13 @@ class User < ApplicationRecord
 
   has_many :tasks
   has_many :subtasks, through: :tasks
+  has_one_attached :photo
 
   # Code to include a user_id in the Statistics table
   # has_many :submitted_statistics, class_name: "Statistic", foreign_key: :user_id
 
   has_many :statistics, as: :input
+
+  # validates :first_name, :last_name, :date_of_birth, :gender, presence: true
+  # validates :email, format: { with: /\A.*@.*\.com\z/, message: "must be a valid .com address" }
 end
