@@ -1,11 +1,17 @@
 <div class="navbar navbar-expand-sm navbar-dark navbar-lewagon">
   <div class="container-fluid">
 
-    <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
-      <%= image_tag "logo.png", alt: "Logo", height: "40" %>
-      <span class="fw-bold text-white fs-5">X-Goal-Achiever</span>
+    <% if user_signed_in? %>
+      <%= link_to tasks_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+        <%= image_tag "logo.png", alt: "Logo", height: "40" %>
+        <span class="fw-bold text-white fs-5">X-Goal-Achiever</span>
+      <% end %>
+    <% else %>
+      <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+        <%= image_tag "logo.png", alt: "Logo", height: "40" %>
+        <span class="fw-bold text-white fs-5">X-Goal-Achiever</span>
+      <% end %>
     <% end %>
-
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
       <span class="navbar-toggler-icon"></span>
@@ -13,7 +19,6 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
-
 
         <% if user_signed_in? %>
 
@@ -30,27 +35,25 @@
           </li>
 
           <li class="nav-item">
-            <a href="#" class="nav-link" title="Notifications">
-              <i class="fas fa-bell"></i>
-            </a>
+            <%= link_to "", notifications_path, class:"nav-link fas fa-bell" %>
           </li>
 
           <li class="nav-item dropdown">
-            <a href="#" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <%= image_tag "avatar.png", class: "avatar", alt: "User avatar" %>
+            <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <%= image_tag "avatar.png", class: "avatar", alt: "dropdown menu" %>
+              <%#= image_tag(current_user.photo.attached? ? url_for(current_user.photo) : "avatar.png", class: "avatar", alt: "Your avatar") %>
             </a>
+
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <a href="#" class="dropdown-item">Profile</a>
-              <a href="#" class="dropdown-item">Log out</a>
+              <%= link_to "My Profile", edit_profile_path(current_user.id), class: "dropdown-item" %>
+              <%= link_to "Log Out", destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item" %>
             </div>
           </li>
         <% else %>
-
           <li class="nav-item">
-            <a href="#" class="nav-link">Login</a>
+            <%= link_to "Sign In", new_user_session_path, class: "nav-link" %>
           </li>
         <% end %>
-
       </ul>
     </div>
   </div>
