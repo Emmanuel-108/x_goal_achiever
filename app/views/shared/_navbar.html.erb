@@ -22,6 +22,24 @@
 
         <% if user_signed_in? %>
 
+          <li class="nav-item dropdown" data-controller="timer">
+            <a class="nav-link dropdown-toggle text-white d-flex align-items-center gap-1" href="#" id="timerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              ⏱ <span data-timer-target="display" id="timer-visible">25:00</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="timerDropdown" style="min-width: 220px;">
+              <div class="mb-2 text-center">
+                <label for="custom-timer" class="form-label small">Set Minutes:</label>
+                <input data-timer-target="input" id="custom-timer" type="number" class="form-control form-control-sm text-center" min="1" max="120" step="1" value="25" />
+              </div>
+
+              <div class="d-flex justify-content-between gap-2">
+                <button data-timer-target="startBtn" data-action="click->timer#start" class="btn btn-primary btn-sm w-100">Start</button>
+                <button data-timer-target="resetBtn" data-action="click->timer#reset" class="btn btn-outline-secondary btn-sm w-100">Reset</button>
+              </div>
+            </div>
+          </li>
+
+
           <li class="nav-item">
             <%= link_to "Dashboard", tasks_path, class:"nav-link" %>
           </li>
