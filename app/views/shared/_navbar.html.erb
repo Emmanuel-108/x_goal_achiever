@@ -1,11 +1,17 @@
 <div class="navbar navbar-expand-sm navbar-dark navbar-lewagon">
   <div class="container-fluid">
 
-    <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
-      <%= image_tag "logo.png", alt: "Logo", height: "40" %>
-      <span class="fw-bold text-white fs-5">X-Goal-Achiever</span>
+    <% if user_signed_in? %>
+      <%= link_to tasks_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+        <%= image_tag "logo.png", alt: "Logo", height: "40" %>
+        <span class="fw-bold text-white fs-5">X-Goal-Achiever</span>
+      <% end %>
+    <% else %>
+      <%= link_to root_path, class: "navbar-brand d-flex align-items-center gap-2" do %>
+        <%= image_tag "logo.png", alt: "Logo", height: "40" %>
+        <span class="fw-bold text-white fs-5">X-Goal-Achiever</span>
+      <% end %>
     <% end %>
-
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
       <span class="navbar-toggler-icon"></span>
@@ -14,44 +20,58 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
 
-
-        <li class="nav-item">
-          <a href="#" class="nav-link">Dashboard</a>
-        </li>
-
-        <li class="nav-item">
-          <a href="#" class="nav-link">Tutorial</a>
-        </li>
-
-        <li class="nav-item">
-          <a href="#" class="nav-link">Contact Us</a>
-        </li>
-
         <% if user_signed_in? %>
 
-          <li class="nav-item">
-            <a href="#" class="nav-link" title="Notifications">
-              <i class="fas fa-bell"></i>
+          <li class="nav-item dropdown" data-controller="timer">
+            <a class="nav-link dropdown-toggle text-white d-flex align-items-center gap-1" href="#" id="timerDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              ⏱ <span data-timer-target="display" id="timer-visible">25:00</span>
             </a>
+            <div class="dropdown-menu dropdown-menu-end p-3" aria-labelledby="timerDropdown" style="min-width: 220px;">
+              <div class="mb-2 text-center">
+                <label for="custom-timer" class="form-label small">Set Minutes:</label>
+                <input data-timer-target="input" id="custom-timer" type="number" class="form-control form-control-sm text-center" min="1" max="120" step="1" value="25" />
+              </div>
+
+              <div class="d-flex justify-content-between gap-2">
+                <button data-timer-target="startBtn" data-action="click->timer#start" class="btn btn-primary btn-sm w-100">Start</button>
+                <button data-timer-target="resetBtn" data-action="click->timer#reset" class="btn btn-outline-secondary btn-sm w-100">Reset</button>
+              </div>
+            </div>
           </li>
 
 
+          <li class="nav-item">
+            <%= link_to "Dashboard", tasks_path, class:"nav-link" %>
+          </li>
+
+          <li class="nav-item">
+            <%= link_to "Tutorial", tutorial_path, class:"nav-link" %>
+          </li>
+
+          <li class="nav-item">
+            <%= link_to "Contact Us", contact_path, class:"nav-link" %>
+          </li>
+
+          <li class="nav-item">
+            <%= link_to "", notifications_path, class:"nav-link fas fa-bell" %>
+          </li>
+
           <li class="nav-item dropdown">
-            <a href="#" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <%= image_tag "avatar.png", class: "avatar", alt: "User avatar" %>
+            <a href="#" class="avatar" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <%= image_tag "avatar.png", class: "avatar", alt: "dropdown menu" %>
+              <%#= image_tag(current_user.photo.attached? ? url_for(current_user.photo) : "avatar.png", class: "avatar", alt: "Your avatar") %>
             </a>
+
             <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-              <a href="#" class="dropdown-item">Profile</a>
-              <a href="#" class="dropdown-item">Log out</a>
+              <%= link_to "My Profile", edit_profile_path(current_user.id), class: "dropdown-item" %>
+              <%= link_to "Log Out", destroy_user_session_path, data: { turbo_method: :delete }, class: "dropdown-item" %>
             </div>
           </li>
         <% else %>
-
           <li class="nav-item">
-            <a href="#" class="nav-link">Login</a>
+            <%= link_to "Sign In", new_user_session_path, class: "nav-link" %>
           </li>
         <% end %>
-
       </ul>
     </div>
   </div>

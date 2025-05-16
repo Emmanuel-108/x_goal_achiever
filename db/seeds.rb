@@ -4,6 +4,10 @@ require 'faker'
 user = User.find_or_create_by!(id: 1) do |u|
   u.email = "test@test.com"
   u.password = "123123"
+  u.first_name = "admin"
+  u.last_name = "tester"
+  u.date_of_birth = "2003-11-07 14:23:45"
+  u.gender = "male"
 end
 
 # Get today's date

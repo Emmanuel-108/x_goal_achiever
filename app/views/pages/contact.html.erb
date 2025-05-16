@@ -1,0 +1,58 @@
+<div class="container contact-wrapper">
+  <div class="row">
+
+    <div class="col-md-6 contact-form">
+      <h1 class="contact-form-title">Contact us</h1>
+
+      <form>
+        <div class="mb-3">
+          <label for="name" class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="name" placeholder="Enter your name">
+        </div>
+
+        <div class="mb-3">
+          <label for="email" class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="email" placeholder="Enter your email">
+        </div>
+
+        <div class="mb-3">
+          <label for="phone" class="form-label">Contact No</label>
+          <input type="text" class="form-control" id="phone" placeholder="Enter your contact number">
+        </div>
+
+        <div class="mb-3">
+          <label for="message" class="form-label">Write Message</label>
+          <textarea class="form-control" id="message" rows="5" placeholder="Your message"></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-submit" disabled>Submit</button>
+      </form>
+    </div>
+
+    <div class="col-md-6 p-0">
+      <div id="map" style="width: 100%; height: 100%; min-height: 500px;"></div>
+    </div>
+  </div>
+</div>
+
+<link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+
+
+<script>
+  document.addEventListener("turbo:load", function () {
+    const mapElement = document.getElementById('map');
+    if (!mapElement) return;
+
+    mapboxgl.accessToken = 'pk.eyJ1Ijoia2FuYWRvcjI0IiwiYSI6ImNtOGFlYmRmdDBvaDcycXFhMGp0dTNnbnIifQ.5yRITjzyzP175M0-OtChUQ';
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v12',
+      center: [-73.5949909455256, 45.52633929081981],
+      zoom: 15
+    });
+
+    new mapboxgl.Marker()
+      .setLngLat([-73.5949909455256, 45.52633929081981])
+      .addTo(map);
+  });
+</script>
