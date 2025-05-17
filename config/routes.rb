@@ -2,7 +2,7 @@ Rails.application.routes.draw do
   devise_for :users
   root to: "pages#home"
   get 'tutorial', to: "pages#tutorial"
-  get 'contact', to: 'pages#contact'
+  # get 'contact', to: 'pages#contact'
   get 'notifications', to: 'pages#notification'
   resources :profiles, only: [:show, :edit, :update]
 
@@ -20,4 +20,6 @@ Rails.application.routes.draw do
   resources :subtasks do
     resources :statistics, only: [:index, :new, :create, :edit, :update ]
   end
+
+  resources :contacts, only: [:index, :new, :create]
 end
