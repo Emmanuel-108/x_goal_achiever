@@ -1,12 +1,12 @@
 <div class="login-page">
   <div class="login-container">
-    <h1>Create an Account</h1>
+    <h1 class="form-text">Create an Account</h1>
 
     <%= form_with(model: resource, as: resource_name, url: registration_path(resource_name), html: { class: "login-form" }) do |form| %>
 
       <% if resource.errors.any? %>
         <div class="errors">
-          <h2>Sign Up Error :</h2>
+          <h2>Sign Up Error:</h2>
           <ul>
             <% resource.errors.full_messages.each do |message| %>
               <li><%= message %></li>

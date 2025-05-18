@@ -1,7 +1,7 @@
 <%# link href="https://fonts.googleapis.com/css2?family=Jersey+25&family=Press+Start+2P&display=swap" rel="stylesheet" %>
 <div class="login-page body">
   <div class="login-container">
-    <h1 class="body">My Profile</h1>
+    <h1 class="body form-text">My Profile</h1>
 
     <%= form_with(model: @user, url: profile_path, method: :patch, local: true, html: { class: "login-form" }) do |form| %>
 

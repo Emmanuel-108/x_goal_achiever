@@ -6,29 +6,43 @@
     <div class="col-md-6 contact-form">
       <h1 class="contact-form-title">Contact us</h1>
 
-      <form>
-        <div class="mb-3">
-          <label for="name" class="form-label">Full Name</label>
-          <input type="text" class="form-control" id="name" placeholder="Enter your name">
+      <%= form_with(model: @contact, html: { class: "login-form" }) do |form| %>
+
+        <% if @contact.errors.any? %>
+          <div class="errors">
+            <h2>Form Error:</h2>
+            <ul>
+              <% @contact.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div class="form-group">
+          <%= form.label :full_name, "Full Name", class:"form-label" %><br />
+          <%= form.text_field :full_name, autofocus: true, class: "form-control borderedform", placeholder:"Enter your name" %>
         </div>
 
-        <div class="mb-3">
-          <label for="email" class="form-label">Email Address</label>
-          <input type="email" class="form-control" id="email" placeholder="Enter your email">
+        <div class="form-group">
+          <%= form.label :email, "Email Address", class:"form-label" %><br />
+          <%= form.text_field :email, autofocus: true, class: "form-control borderedform", placeholder:"Enter your email" %>
         </div>
 
-        <div class="mb-3">
-          <label for="phone" class="form-label">Contact No</label>
-          <input type="text" class="form-control" id="phone" placeholder="Enter your contact number">
+        <div class="form-group">
+          <%= form.label :phone_number, "Contact Number", class:"form-label" %><br />
+          <%= form.text_field :phone_number, autofocus: true, class: "form-control borderedform", placeholder:"Enter your contact phone number (optional)" %>
         </div>
 
-        <div class="mb-3">
-          <label for="message" class="form-label">Write Message</label>
-          <textarea class="form-control" id="message" rows="5" placeholder="Your message"></textarea>
+        <div class="form-group">
+          <%= form.label :message, "Write Message", class:"form-label" %><br />
+          <%= form.text_area :message, autofocus: true, class: "form-control borderedform", rows:"5", placeholder:"Your message" %>
         </div>
 
-        <button type="submit" class="btn btn-submit" disabled>Submit</button>
-      </form>
+        <div class="form-group">
+          <%= form.submit "Submit", class: "btn btn-submit" %>
+        </div>
+      <% end %>
     </div>
 
     <div class="col-md-6 p-0">
