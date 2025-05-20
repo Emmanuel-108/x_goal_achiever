@@ -1,3 +1,5 @@
+// contact_map.js
+
 document.addEventListener("turbo:load", function () {
   const mapElement = document.getElementById('map');
   if (!mapElement) return;
