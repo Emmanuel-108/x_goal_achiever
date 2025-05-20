@@ -3,3 +3,6 @@ import "@hotwired/turbo-rails"
 import "controllers"
 import "@popperjs/core"
 import "bootstrap"
+
+// contact page
+import "./contact_map"
