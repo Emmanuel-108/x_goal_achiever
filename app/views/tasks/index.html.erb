@@ -150,7 +150,7 @@
               <!-- Slide 1 -->
               <div class="step step-1">
                 <h5>Task Name:</h5>
-                <%= form.text_field :name, class: "form-control", placeholder: "Enter task name", required: true %>
+                <%= form.text_field :name, name: 'task[name]', class: "form-control", placeholder: "Enter task name", required: true %>
               </div>
 
               <!-- Slide 2 -->
@@ -188,7 +188,7 @@
                   <%#= form.time_field :start_time, class: "form-control" %>
                 </div>
                 <!-- This hidden field will hold the combined datetime -->
-                <%= form.hidden_field :time, id: "combinedDatetime" %>
+                <%= form.hidden_field :time, id: "combinedDatetime", name: "task[time]" %>
               </div>
 
               <!-- Slide 5 -->
@@ -197,7 +197,7 @@
 
                 <!-- Final summary -->
                 <p><strong>Task Summary:</strong></p>
-                <%= form.text_area :description, class: "form-control mb-3", rows: 4, placeholder: "Task summary..." %>
+                <%= form.text_area :description, name: 'task[description]', class: "form-control mb-3", rows: 4, placeholder: "Task summary..." %>
 
                 <!-- Hidden field for ISO datetime -->
                 <%#= hidden_field_tag :task_time, nil, id: "combinedDatetime" %>

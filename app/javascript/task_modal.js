@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const input = document.createElement('input');
       input.type = 'text';
       // input.name = `subtasks[]`; // Submit as an array
-      input.name = 'task[subtasks][]';
+      input.name = `task[subtasks_attributes][${i}][name]`;
       input.placeholder = `Sub-task ${i}`;
       input.className = 'form-control mb-2';
       subtaskInputsContainer.appendChild(input);
