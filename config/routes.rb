@@ -1,6 +1,11 @@
 Rails.application.routes.draw do
   devise_for :users
   root to: "pages#home"
+
+  # Root for focus until the create new task was create
+  get 'focus', to: 'pages#focus', as: :focus
+
+
   get 'tutorial', to: "pages#tutorial"
   # get 'contact', to: 'pages#contact'
   get 'notifications', to: 'pages#notification'
