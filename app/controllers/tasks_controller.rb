@@ -17,12 +17,6 @@ class TasksController < ApplicationController
     @task = current_user.tasks.new(task_params)
 
     if @task.save
-      # Handle subtasks
-      if params[:subtasks].present?
-        params[:subtasks].each do |subtask_name|
-          @task.subtasks.create(name: subtask_name)
-        end
-      end
       redirect_to task_path(@task), notice: "Task and subtasks successfully added! 📝"
     else
       Rails.logger.error "Task save failed: #{@task.errors.full_messages.to_sentence}"
@@ -54,7 +48,12 @@ class TasksController < ApplicationController
   private
 
   def task_params
-    params.require(:task).permit(:name, :description, :time)
+    params.require(:task).permit(
+      :name,
+      :description,
+      :time,
+      subtasks_attributes: [:name]
+    )
 
     # permitted[:time] = params[:task_time]
     # permitted
