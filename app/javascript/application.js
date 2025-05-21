@@ -6,3 +6,4 @@ import "bootstrap"
 
 // contact page
 import "./contact_map"
+import "./task_modal"
