@@ -25,10 +25,8 @@ Rails.application.routes.draw do
   resources :subtasks do
     resources :statistics, only: [:index, :new, :create, :edit, :update ]
   end
-  # statistics
+  # /statistics
   get 'statistics/advanced', to: 'statistics#advanced', as: :advanced_statistics
-
-  # resources :statistics, only: [:index]
 
   resources :contacts, only: [:index, :new, :create]
 end
