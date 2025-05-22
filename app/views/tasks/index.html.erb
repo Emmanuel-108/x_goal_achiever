@@ -8,31 +8,43 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 />
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const ctx = document.getElementById('statsChart').getContext('2d');
-    const statsChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-        datasets: [{
-          label: 'Completed Tasks',
-          data: [3, 7, 4, 5, 6],
-          backgroundColor: '#7C3AED',
-          borderRadius: 5
-        }]
-      },
+
+    const data = {
+      labels: ['Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+      datasets: [{
+        label: 'Segmented Line',
+        borderColor: 'rgb(75, 192, 192)',
+        borderWidth: 3,
+        fill: false,
+        segment: {
+          borderColor: ctx =>
+            ctx.p0.parsed.y > ctx.p1.parsed.y ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)',
+          borderDash: ctx => ctx.p0.parsed.y > ctx.p1.parsed.y ? [6, 6] : []
+        },
+        data: [2, 3, 5, 0, 9, 11, 4],
+        tension: 0.4
+      }]
+    };
+
+    const config = {
+      type: 'line',
+      data: data,
       options: {
         responsive: true,
         scales: {
-          y: {
-            beginAtZero: true
-          }
+          y: { beginAtZero: true }
         }
       }
-    });
+    };
+
+    new Chart(ctx, config);
   });
+
 </script>
 
 <div class ="dashboard-page">
@@ -41,11 +53,11 @@
     <div class="top-section">
       <div class="statistics-card">
         <div class="statistics-box font-main">
-          <h2 class="font-main">Statistics</h2>
-          <div class="graph-placeholder ">
-            <canvas id="statsChart" class="font-main"></canvas>
+          <h2 class="font-main text-center">Statistics</h2>
+          <div class="graph-placeholder">
+            <canvas id="statsChart" width="600" height="400" class="font-main"></canvas>
           </div>
-          <button class="btn font-main mt-3">Advanced Statistics</button>
+          <button class="btn font-main mt-5">Advanced Statistics</button>
         </div>
       </div>
 
