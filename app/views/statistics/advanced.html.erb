@@ -1,0 +1,42 @@
+<h2>📊 Moyenne des performances par jour</h2>
+<canvas id="dailyChart" height="100"></canvas>
+
+<% if @chart_data.blank? %>
+  <p style="color:red;">❌ Aucune donnée à afficher.</p>
+<% else %>
+  <pre><%= JSON.pretty_generate(@chart_data) %></pre>
+<% end %>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const stats = <%= raw @chart_data.to_json %>;
+
+    const labels = stats.map(s => s.date);
+    const data = stats.map(s => s.avg);
+
+    const ctx = document.getElementById('dailyChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Performance moyenne',
+          data: data,
+          backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          borderColor: 'rgba(54, 162, 235, 1)',
+          borderWidth: 1
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
+    });
+  });
+</script>
