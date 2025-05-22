@@ -13,39 +13,79 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const ctx = document.getElementById('statsChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, '#7C3AED');   // Violet
+    gradient.addColorStop(1, '#3B82F6');   // Blue
 
-    const data = {
-      labels: ['Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      datasets: [{
-        label: 'Segmented Line',
-        borderColor: 'rgb(75, 192, 192)',
-        borderWidth: 3,
-        fill: false,
-        segment: {
-          borderColor: ctx =>
-            ctx.p0.parsed.y > ctx.p1.parsed.y ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)',
-          borderDash: ctx => ctx.p0.parsed.y > ctx.p1.parsed.y ? [6, 6] : []
-        },
-        data: [2, 3, 5, 0, 9, 11, 4],
-        tension: 0.4
-      }]
-    };
-
-    const config = {
-      type: 'line',
-      data: data,
+    const statsChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        datasets: [{
+          label: 'Completed Tasks',
+          data: [3, 7, 4, 5, 6],
+          backgroundColor: gradient,
+          borderRadius: 10,
+          hoverBackgroundColor: '#4F46E5'
+        }]
+      },
       options: {
         responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#374151',
+              font: {
+                family: 'Outfit',
+                size: 14,
+                weight: 'bold'
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#1F2937',
+            titleColor: '#E5E7EB',
+            bodyColor: '#E5E7EB',
+            cornerRadius: 6,
+            padding: 10
+          }
+        },
         scales: {
-          y: { beginAtZero: true }
+          x: {
+            ticks: {
+              color: '#4B5563',
+              font: {
+                family: 'Outfit',
+                size: 13
+              }
+            },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#4B5563',
+              font: {
+                family: 'Outfit',
+                size: 13
+              }
+            },
+            grid: {
+              color: '#E5E7EB'
+            }
+          }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
         }
       }
-    };
-
-    new Chart(ctx, config);
+    });
   });
-
 </script>
+
 
 <div class ="dashboard-page">
   <div class="container font-main">
