@@ -14,3 +14,22 @@
     color: white;
   }
 }
+
+.btncharts {
+  background-color: #112D4E;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.4s;
+  margin-top: 50px;
+  align-self: flex-end;
+}
+
+.btncharts:hover {
+  background-color: #1f5088;
+  transform: scale(1.075);
+  color: white;
+}
