@@ -14,11 +14,12 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = Task.new(task_params)
+    @task = current_user.tasks.new(task_params)
 
     if @task.save
-      redirect_to task_path(@task), notice: "Task successfully added! 📝"
+      redirect_to task_path(@task), notice: "Task and subtasks successfully added! 📝"
     else
+      Rails.logger.error "Task save failed: #{@task.errors.full_messages.to_sentence}"
       render :new, status: :unprocessable_entity
     end
   end
@@ -47,7 +48,15 @@ class TasksController < ApplicationController
   private
 
   def task_params
-    params.require(:task).permit(:name, :description, :time)
+    params.require(:task).permit(
+      :name,
+      :description,
+      :time,
+      subtasks_attributes: [:name]
+    )
+
+    # permitted[:time] = params[:task_time]
+    # permitted
   end
 
   # def set_task

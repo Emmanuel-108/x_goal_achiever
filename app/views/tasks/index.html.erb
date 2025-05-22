@@ -8,36 +8,77 @@
   crossorigin="anonymous"
   referrerpolicy="no-referrer"
 />
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const ctx = document.getElementById('statsChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, '#7C3AED');   // Violet
+    gradient.addColorStop(1, '#3B82F6');   // Bleu
 
-    const data = {
-      labels: ['Monday', 'Thuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-      datasets: [{
-        label: 'Segmented Line',
-        borderColor: 'rgb(75, 192, 192)',
-        borderWidth: 3,
-        fill: false,
-        segment: {
-          borderColor: ctx =>
-            ctx.p0.parsed.y > ctx.p1.parsed.y ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)',
-          borderDash: ctx => ctx.p0.parsed.y > ctx.p1.parsed.y ? [6, 6] : []
-        },
-        data: [2, 3, 5, 0, 9, 11, 4],
-        tension: 0.4
-      }]
-    };
-
-    const config = {
-      type: 'line',
-      data: data,
+    const statsChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        datasets: [{
+          label: 'Completed Tasks',
+          data: [3, 7, 4, 5, 6],
+          backgroundColor: gradient,
+          borderRadius: 10,
+          hoverBackgroundColor: '#4F46E5'
+        }]
+      },
       options: {
         responsive: true,
+        plugins: {
+          legend: {
+            labels: {
+              color: '#374151',
+              font: {
+                family: 'Outfit',
+                size: 14,
+                weight: 'bold'
+              }
+            }
+          },
+          tooltip: {
+            backgroundColor: '#1F2937',
+            titleColor: '#E5E7EB',
+            bodyColor: '#E5E7EB',
+            cornerRadius: 6,
+            padding: 10
+          }
+        },
         scales: {
-          y: { beginAtZero: true }
+          x: {
+            ticks: {
+              color: '#4B5563',
+              font: {
+                family: 'Outfit',
+                size: 13
+              }
+            },
+            grid: {
+              display: false
+            }
+          },
+          y: {
+            beginAtZero: true,
+            ticks: {
+              color: '#4B5563',
+              font: {
+                family: 'Outfit',
+                size: 13
+              }
+            },
+            grid: {
+              color: '#E5E7EB'
+            }
+          }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutQuart'
         }
       }
     };
@@ -76,8 +117,9 @@
               <label><input type="radio" name="distribution" value="decremental" /> Decremental</label><br />
               <label><input type="radio" name="distribution" value="random" /> Random</label>
             </fieldset>
-
-            <button class="btn mt-3 font-main">Create a New Task</button>
+            <button type="button" class="btn mt-3 btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+              Create a New Task
+            </button>
           </form>
         </div>
         <div class="recent-tasks dashboard-card overflow-auto" style="max-height: 200px;">
@@ -93,6 +135,90 @@
         </div>
       </div>
     </div>
+
+    <!-- Multi-Step Modal Form -->
+    <%= form_with(model: @task, url: tasks_path, local: true) do |form| %>
+      <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+
+            <div class="modal-header">
+              <h5 class="modal-title">Create a Task</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body">
+
+              <!-- Slide 1 -->
+              <div class="step step-1">
+                <h5>Task Name:</h5>
+                <%= form.text_field :name, name: 'task[name]', class: "form-control", placeholder: "Enter task name", required: true %>
+              </div>
+
+              <!-- Slide 2 -->
+              <div class="step step-2 d-none">
+                <h5>Number of Sub-Tasks:</h5>
+                <%= form.select :subtask_count, options_for_select([1,2,3], 3), {}, { class: "form-select", id: "subtaskCountSelect" } %>
+                <%# <select class="form-select" id="subtaskCountSelect" name="subtask_count">
+                  <option value="1">1 Sub-task</option>
+                  <option value="2">2 Sub-tasks</option>
+                  <option value="3" selected>3 Sub-tasks</option>
+                </select> %>
+              </div>
+              <%= form.hidden_field :subtask_count, id: "hiddenSubtaskCount" %>
+              <%#= hidden_field_tag :subtask_count, nil, id: "hiddenSubtaskCount" %>
+
+              <!-- Slide 3 -->
+              <div class="step step-3 d-none">
+                <h5>Sub-task Names:</h5>
+                <div id="subtaskInputs">
+                  <!-- Sub-task inputs inserted here dynamically -->
+                </div>
+              </div>
+
+              <!-- Slide 4 -->
+              <div class="step step-4 d-none">
+                <h5>Starting Time:</h5>
+                <div class="mb-3">
+                  <label for="date">Date:</label>
+                  <input type="date" id="date" class="form-control" required>
+                  <%#= form.date_field :start_date, class: "form-control" %>
+                </div>
+                <div class="mb-3">
+                  <label for="time_input">Time (HH:MM):</label>
+                  <input type="time" id="time_input" class="form-control" required>
+                  <%#= form.time_field :start_time, class: "form-control" %>
+                </div>
+                <!-- This hidden field will hold the combined datetime -->
+                <%= form.hidden_field :time, id: "combinedDatetime", name: "task[time]" %>
+              </div>
+
+              <!-- Slide 5 -->
+              <div class="step step-5 d-none">
+                <h5>Setup Task:</h5>
+
+                <!-- Final summary -->
+                <p><strong>Task Summary:</strong></p>
+                <%= form.text_area :description, name: 'task[description]', class: "form-control mb-3", rows: 4, placeholder: "Task summary..." %>
+
+                <!-- Hidden field for ISO datetime -->
+                <%#= hidden_field_tag :task_time, nil, id: "combinedDatetime" %>
+
+                <%= form.submit "Create Task", class: "btn btn-success" %>
+              </div>
+
+            </div>
+
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="prevStep" disabled>Back</button>
+              <button type="button" class="btn btn-primary" id="nextStep">Next</button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    <% end %>
+
   </div>
   <footer class="footer-bar">
     <div class="footer-content">
