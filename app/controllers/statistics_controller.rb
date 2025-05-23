@@ -1,6 +1,5 @@
 class StatisticsController < ApplicationController
   def index
-
     @statistics = Statistic.where(user: current_user)
 
     if params[:status].present?
@@ -15,9 +14,8 @@ class StatisticsController < ApplicationController
     end
 
     @statistics = Statistic.where(user: current_user)
-                          .where('start_time >= ?', 7.days.ago)
-                          .order(:start_time)
-
+                           .where('start_time >= ?', 7.days.ago)
+                           .order(:start_time)
 
     @chart_data = @statistics
       .group_by { |s| s.start_time.strftime("%Y-%m-%d %H") }
@@ -30,23 +28,32 @@ class StatisticsController < ApplicationController
           max: performances.max
         }
       end
-
   end
-
 
   # def show
   #   @statistic = Statistic.find(params[:id])
   # end
 
-  #
   def new
     @statistic = Statistic.new
   end
 
   def create
-    @statistic = Statistic.new(statistic_params)
+    @task = current_user.tasks.order(created_at: :desc).first
+
+    unless @task
+      redirect_to tasks_path, alert: "The task was not created"
+      return
+    end
+
+    @statistic = @task.statistics.new(statistic_params)
 
     if @statistic.save
+
+      @task.subtasks.each do |subtask|
+        subtask.statistics.create(statistic_params)
+      end
+
       redirect_to tasks_path, notice: "Statistic successfully added! 📈"
     else
       render :new, status: :unprocessable_entity
