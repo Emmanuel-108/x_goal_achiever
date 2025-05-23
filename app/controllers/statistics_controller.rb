@@ -7,6 +7,7 @@ class StatisticsController < ApplicationController
   #   @statistic = Statistic.find(params[:id])
   # end
 
+  #
   def new
     @statistic = Statistic.new
   end
