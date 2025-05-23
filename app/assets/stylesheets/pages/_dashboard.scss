@@ -55,6 +55,7 @@
   flex: 2;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
 .right-column {
@@ -65,21 +66,22 @@
 }
 
 .statistics-box {
-  position: relative;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .graph-placeholder {
-  position: relative;
-  width: 600px;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
 }
 
 #statsChart {
   width: 100% !important;
-  height: 400px !important;
-  display: inline-block;
+  height: auto !important;
 }
 
 // canvas {
@@ -98,6 +100,7 @@
   width: 100%;
   font-size: 1.25rem;
   position: relative;
+  margin-top: 10px;
 
   .footer-content {
     display: flex;
