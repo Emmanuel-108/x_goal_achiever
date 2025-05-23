@@ -1,7 +1,38 @@
 class StatisticsController < ApplicationController
   def index
-    @statistics = Statistic.all
+
+    @statistics = Statistic.where(user: current_user)
+
+    if params[:status].present?
+      @statistics = @statistics.where(input_status: params[:status])
+    end
+
+    if params[:date].present?
+      date = Date.parse(params[:date])
+      @statistics = @statistics.where(start_time: date.beginning_of_day..date.end_of_day)
+    else
+      @statistics = @statistics.where('start_time >= ?', 7.days.ago)
+    end
+
+    @statistics = Statistic.where(user: current_user)
+                          .where('start_time >= ?', 7.days.ago)
+                          .order(:start_time)
+
+
+    @chart_data = @statistics
+      .group_by { |s| s.start_time.strftime("%Y-%m-%d %H") }
+      .map do |key, stats|
+        performances = stats.map(&:input_performance).compact
+        {
+          date: Time.parse("#{key}:00").strftime("%Y-%m-%d %H:%M"),
+          avg: (performances.sum.to_f / performances.size).round(2),
+          min: performances.min,
+          max: performances.max
+        }
+      end
+
   end
+
 
   # def show
   #   @statistic = Statistic.find(params[:id])
