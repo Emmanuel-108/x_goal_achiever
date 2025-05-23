@@ -7,23 +7,6 @@ class StatisticsController < ApplicationController
   #   @statistic = Statistic.find(params[:id])
   # end
 
-  def advanced
-    @daily_stats = Statistic
-      .where(user: current_user)
-      .group_by { |s| s.start_time.to_date }
-
-    @chart_data = @daily_stats.map do |date, stats|
-      performances = stats.map(&:input_performance).compact
-      next if performances.empty?
-
-      {
-        date: date.strftime('%Y-%m-%d'),
-        avg: (performances.sum.to_f / performances.size).round(2)
-      }
-    end.compact
-  end
-
-
   def new
     @statistic = Statistic.new
   end
