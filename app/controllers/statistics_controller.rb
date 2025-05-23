@@ -45,6 +45,6 @@ class StatisticsController < ApplicationController
   private
 
   def statistic_params
-    params.require(:task).permit(:input_status, :input_rating, :input_performance)
+    params.require(:task).permit(:start_time, :end_time, :input_type, :input_status, :input_rating, :input_performance)
   end
 end
