@@ -97,7 +97,6 @@
             <canvas id="statsChart" width="600" height="400" class="font-main"></canvas>
           </div>
 
-          <!-- New button link to advanced statistics page. -->
          <%= link_to "📊 Advanced statistics", statistics_path, class: "btn btn-outline-primary" %>
 
 
@@ -138,7 +137,6 @@
       </div>
     </div>
 
-    <!-- Multi-Step Modal Form -->
     <%= form_with(model: @task, url: tasks_path, local: true) do |form| %>
       <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -151,13 +149,11 @@
 
             <div class="modal-body">
 
-              <!-- Slide 1 -->
               <div class="step step-1">
                 <h5>Task Name:</h5>
                 <%= form.text_field :name, name: 'task[name]', class: "form-control", placeholder: "Enter task name", required: true %>
               </div>
 
-              <!-- Slide 2 -->
               <div class="step step-2 d-none">
                 <h5>Number of Sub-Tasks:</h5>
                 <%= form.select :subtask_count, options_for_select([1,2,3], 3), {}, { class: "form-select", id: "subtaskCountSelect" } %>
@@ -168,43 +164,36 @@
                 </select> %>
               </div>
               <%= form.hidden_field :subtask_count, id: "hiddenSubtaskCount" %>
-              <%#= hidden_field_tag :subtask_count, nil, id: "hiddenSubtaskCount" %>
 
-              <!-- Slide 3 -->
               <div class="step step-3 d-none">
                 <h5>Sub-task Names:</h5>
                 <div id="subtaskInputs">
-                  <!-- Sub-task inputs inserted here dynamically -->
+
                 </div>
               </div>
 
-              <!-- Slide 4 -->
+
               <div class="step step-4 d-none">
                 <h5>Starting Time:</h5>
                 <div class="mb-3">
                   <label for="date">Date:</label>
                   <input type="date" id="date" class="form-control" required>
-                  <%#= form.date_field :start_date, class: "form-control" %>
+
                 </div>
                 <div class="mb-3">
                   <label for="time_input">Time (HH:MM):</label>
                   <input type="time" id="time_input" class="form-control" required>
-                  <%#= form.time_field :start_time, class: "form-control" %>
+
                 </div>
-                <!-- This hidden field will hold the combined datetime -->
+
                 <%= form.hidden_field :time, id: "combinedDatetime", name: "task[time]" %>
               </div>
 
-              <!-- Slide 5 -->
               <div class="step step-5 d-none">
                 <h5>Setup Task:</h5>
 
-                <!-- Final summary -->
                 <p><strong>Task Summary:</strong></p>
                 <%= form.text_area :description, name: 'task[description]', class: "form-control mb-3", rows: 4, placeholder: "Task summary..." %>
-
-                <!-- Hidden field for ISO datetime -->
-                <%#= hidden_field_tag :task_time, nil, id: "combinedDatetime" %>
 
                 <%= form.submit "Create Task", class: "btn btn-success" %>
               </div>
@@ -220,8 +209,9 @@
         </div>
       </div>
     <% end %>
-
+</div>
   </div>
+  <div id="vanta-background"></div>
   <footer class="footer-bar">
     <div class="footer-content">
       <a href="https://twitter.com" target="_blank" aria-label="Twitter">
