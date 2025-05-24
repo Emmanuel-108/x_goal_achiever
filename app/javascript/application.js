@@ -7,3 +7,6 @@ import "bootstrap"
 // contact page
 import "./contact_map"
 import "./task_modal"
+
+// timer
+import "./controllers/task_form_submit_controller";
