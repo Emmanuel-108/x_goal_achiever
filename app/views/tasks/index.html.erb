@@ -89,22 +89,22 @@
 
 <div class ="dashboard-page">
   <div class="container font-main">
-  <%# <h1 class = "text-center mt-3 font-main">Overview</h1> %>
+
     <div class="top-section">
-      <%# Statistics Panel %>
+
       <div class="statistics-card">
         <div class="statistics-box font-main">
           <h2 class="font-main text-center">Statistics</h2>
           <div class="graph-placeholder">
             <canvas id="statsChart" width="600" height="400" class="font-main"></canvas>
           </div>
-          <%= link_to "📊 Advanced statistics", statistics_path, class: "btn btn-outline-primary" %>
+          <%= link_to "📊 Advanced statistics", statistics_path, class: "btn btn-outline-primary mt-5" %>
         </div>
       </div>
 
-      <%# Tasks Panels %>
+
       <div class="right-column">
-        <%# New Task Panel %>
+
         <div class="task-form dashboard-card font-main">
           <form>
             <h2 class ="text-center mb-3 font-main"> New task </h2>
@@ -124,42 +124,42 @@
             </button>
           </form>
         </div>
-        <%# Task Modal Form - to be kept outside the New Task Panel - IMPORTANT! %>
+
         <div data-controller="task-modal">
           <%= form_with(model: @task, url: tasks_path, local: true) do |form| %>
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
 
-                  <%# Header %>
+
                   <div class="modal-header">
                     <h5 class="modal-title">Create a Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
 
-                  <%# Body %>
+
                   <div class="modal-body">
 
-                    <%# Step 1 %>
+
                     <div class="step step-1" data-task-modal-target="step">
                       <h5>Task Name:</h5>
                       <%= form.text_field :name, name: 'task[name]', class: "form-control", placeholder: "Enter task name", required: true %>
                     </div>
 
-                    <%# Step 2 %>
+
                     <div class="step step-2 d-none" data-task-modal-target="step">
                       <h5>Number of Sub-Tasks:</h5>
                       <%= form.select :subtask_count, options_for_select([1,2,3,4,5], 1), {}, { class: "form-select", data: { task_modal_target: "subtaskCountSelect", action: "change->task-modal#updateSubtaskCount" } } %>
                     </div>
                     <%= form.hidden_field :subtask_count, data: { task_modal_target: "hiddenSubtaskCount" } %>
 
-                    <%# Step 3 %>
+
                     <div class="step step-3 d-none" data-task-modal-target="step">
                       <h5>Sub-task Names:</h5>
                       <div data-task-modal-target="subtaskInputs"></div>
                     </div>
 
-                    <%# Step 4 %>
+
                     <div class="step step-4 d-none" data-task-modal-target="step">
                       <h5>Setup Task:</h5>
                       <p><strong>Task Summary:</strong></p>
@@ -169,7 +169,7 @@
 
                   </div>
 
-                  <%# Footer %>
+
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-task-modal-target="prevBtn" data-action="click->task-modal#prev">Back</button>
                     <button type="button" class="btn btn-primary" data-task-modal-target="nextBtn" data-action="click->task-modal#next">Next</button>
@@ -181,7 +181,7 @@
           <% end %>
         </div>
 
-        <%# Recent Tasks Panel %>
+
         <div class="recent-tasks dashboard-card overflow-auto" style="max-height: 200px;">
           <h3 class="font-main text-center">Recent Tasks</h3>
           <ul class="task-list">
