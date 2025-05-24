@@ -15,6 +15,7 @@ class TasksController < ApplicationController
 
   def create
     @task = current_user.tasks.new(task_params)
+    @task.distribute_time!(params[:time].to_i, params[:distribution])
 
     if @task.save
       redirect_to new_task_statistic_path(@task), notice: "Task and subtasks successfully added! 📝"
