@@ -5,7 +5,6 @@ class PagesController < ApplicationController
   def focus
   end
 
-
   def home
   end
 

@@ -15,11 +15,12 @@ class TasksController < ApplicationController
 
   def create
     @task = current_user.tasks.new(task_params)
+    @task.distribute_time!(params[:time].to_i, params[:distribution])
 
     if @task.save
-      redirect_to task_path(@task), notice: "Task and subtasks successfully added! 📝"
+      redirect_to new_task_statistic_path(@task), notice: "Task and subtasks successfully added! 📝"
     else
-      Rails.logger.error "Task save failed: #{@task.errors.full_messages.to_sentence}"
+      # Rails.logger.error "Task save failed: #{@task.errors.full_messages.to_sentence}"
       render :new, status: :unprocessable_entity
     end
   end
@@ -52,11 +53,8 @@ class TasksController < ApplicationController
       :name,
       :description,
       :time,
-      subtasks_attributes: [:name]
+      subtasks_attributes: [:name, :description, :time]
     )
-
-    # permitted[:time] = params[:task_time]
-    # permitted
   end
 
   # def set_task
