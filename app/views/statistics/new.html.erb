@@ -1,5 +1,4 @@
-<!-- http://localhost:3000/focus -->
-
+<!--
 <div class="focus-bg d-flex justify-content-center align-items-center">
   <div class="focus-box">
 
@@ -17,3 +16,74 @@
 
   </div>
 </div>
+--><div class="focus-bg d-flex justify-content-center align-items-center">
+  <div class="focus-box position-relative">
+
+    <button class="btn btn-close position-absolute end-0 m-3" onclick="window.location.href='/tasks'"></button>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h5 class="mb-0">Focus panel</h5>
+      <a href="https://open.spotify.com" target="_blank" class="btn-spotify d-flex align-items-center">
+        <i class="fab fa-spotify mr-2"></i> Spotify
+      </a>
+    </div>
+    <div class="focus-content text-center">
+      <h2 class="mb-4"><%= @task.name %></h2>
+      <div class="timer-display" id="focus-timer">00:00:00</div>
+      <form method="post" action="<%= statistics_path %>" id="focus-form">
+        <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <%= hidden_field_tag :input_type, "Task" %>
+        <%= hidden_field_tag :input_id, @task.id %>
+        <%= hidden_field_tag :start_time, Time.current %>
+        <%= hidden_field_tag :duration, focus_minutes(@task) %>
+        <button type="submit" id="finish-btn" class="btn btn-success mt-4 d-none">Enregistrer la session</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL pop-up (Bootstrap) -->
+<div class="modal fade" id="endTaskModal" tabindex="-1" aria-labelledby="endTaskModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 class="modal-title" id="endTaskModalLabel">🎉 Tâche terminée !</h5>
+      </div>
+      <div class="modal-body">
+        <p>Bravo, tu as terminé la tâche "<%= @task.name %>" !</p>
+        <button class="btn btn-primary" onclick="window.location.href='/tasks'">Retour aux tâches</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+  function startFocusTimer() {
+    let duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
+    const display = document.getElementById('focus-timer');
+    const finishBtn = document.getElementById('finish-btn');
+    let timerId = null;
+
+    function updateTimer() {
+      let h = Math.floor(duration / 3600);
+      let m = Math.floor((duration % 3600) / 60);
+      let s = duration % 60;
+      display.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+      if (duration > 0) {
+        duration--;
+        timerId = setTimeout(updateTimer, 1000);
+      } else {
+        finishBtn.classList.remove("d-none");
+        let endModal = new bootstrap.Modal(document.getElementById('endTaskModal'));
+        endModal.show();
+      }
+    }
+
+
+    if (window.focusPanelTimerId) clearTimeout(window.focusPanelTimerId);
+    window.focusPanelTimerId = setTimeout(updateTimer, 0);
+  }
+
+  document.addEventListener("turbo:load", startFocusTimer);
+  document.addEventListener("DOMContentLoaded", startFocusTimer);
+</script>
