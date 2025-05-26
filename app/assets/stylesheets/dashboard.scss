@@ -1,0 +1,29 @@
+// SCSS for the Main Dashboard app
+
+.dashboard-page { min-height: 100vh; padding-top: 24px; }
+.statistics-card, .task-form, .recent-tasks {
+  background: #dbe2ef; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,0,0,0.09); margin-bottom: 18px;
+}
+.statistics-card { padding: 24px 20px; }
+.right-column { min-width: 340px; max-width: 410px; }
+.task-form { padding: 22px; }
+.task-form .form-label { font-weight: 600; }
+.task-form input[type="number"], .task-form input[type="text"] { font-size: 1.1rem; border-radius: 10px; text-align: center; }
+.task-form .btn-outline-primary, .task-form .btn-primary {
+  font-size: 1.1rem; font-weight: 600; border-radius: 12px; padding: 0.5em 1.3em;
+  border: 2px solid #3B82F6; background: none; color: #3B82F6; transition: background 0.18s, color 0.18s;
+}
+.task-form .btn-outline-primary:hover, .task-form .btn-outline-primary:focus,
+.task-form .btn-primary:hover, .task-form .btn-primary:focus {
+  background: #3B82F6; color: #fff; transform: none !important;
+}
+.recent-tasks { padding: 20px; }
+.recent-tasks ul { padding-left: 1.1rem; }
+.recent-tasks li { margin-bottom: 5px; }
+.font-main { font-family: 'Outfit', sans-serif; }
+.footer-bar { margin-top: 30px; }
+.footer-content { text-align: center; }
+.footer-content a { margin: 0 8px; color: #888; font-size: 1.4rem; transition: color 0.13s; }
+.footer-content a:hover { color: #3B82F6; }
+.task-form .btn-more { margin-left: 10px; background: #EEE; border: none; color: #444; border-radius: 12px; padding: 0.5em 1.2em; transition: background 0.15s; }
+.task-form .btn-more:hover { background: #DDD; color: #3B82F6; }

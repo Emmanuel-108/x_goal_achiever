@@ -1,148 +1,70 @@
-<!--
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-  integrity="sha512-K5N5tvZl5rE5sZK20evRR0ZwDga8N8RbX9lfwGyx7LJ0JXwEjyoWQZxV0TCjDP/5a7gE5q9YQ3o5XcMEU3kCyw=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-/>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const ctx = document.getElementById('statsChart').getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, '#7C3AED');   // Violet
-    gradient.addColorStop(1, '#3B82F6');   // Bleu
-
-    const statsChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-        datasets: [{
-          label: 'Completed Tasks',
-          data: [3, 7, 4, 5, 6],
-          backgroundColor: gradient,
-          borderRadius: 10,
-          hoverBackgroundColor: '#4F46E5'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            labels: {
-              color: '#374151',
-              font: {
-                family: 'Outfit',
-                size: 14,
-                weight: 'bold'
-              }
-            }
-          },
-          tooltip: {
-            backgroundColor: '#1F2937',
-            titleColor: '#E5E7EB',
-            bodyColor: '#E5E7EB',
-            cornerRadius: 6,
-            padding: 10
-          }
-        },
-        scales: {
-          x: {
-            ticks: {
-              color: '#4B5563',
-              font: {
-                family: 'Outfit',
-                size: 13
-              }
-            },
-            grid: {
-              display: false
-            }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: {
-              color: '#4B5563',
-              font: {
-                family: 'Outfit',
-                size: 13
-              }
-            },
-            grid: {
-              color: '#E5E7EB'
-            }
-          }
-        },
-        animation: {
-          duration: 1000,
-          easing: 'easeOutQuart'
-        }
-      }
-    });
-  });
-</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <div id="vanta-background"></div>
 
-<div class ="dashboard-page">
-  <div class="container font-main">
-    <h1 class = "text-center mt-3 font-main">Overview</h1>
-    <div class="top-section">
-      <%# Statistics Panel %>
-      <div class="statistics-card">
-        <div class="statistics-box font-main">
-          <h2 class="font-main text-center">Statistics</h2>
-          <div class="graph-placeholder">
-            <canvas id="statsChart" width="600" height="400" class="font-main"></canvas>
+<%# CSS style of the dashboard.scss %>
+<%= stylesheet_link_tag "dashboard", "data-turbo-track": "reload" %>
+
+<%# Data loading to the Graph %>
+<script type="application/json" id="tasks-data">
+  <%#= @tasks.group_by_day(:created_at, range: 1.week.ago..Time.now).count.to_json.html_safe %>
+  <%= @tasks.group_by_day(:created_at, range: 4.days.ago.beginning_of_day..Time.now).count.to_json.html_safe %>
+</script>
+
+<%# Chart JS moved to application.js >> statistics_graph_index.js %>
+<%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+
+<div class="dashboard-page font-main">
+  <div class="container">
+    <div class="top-section d-flex flex-wrap">
+
+      <!-- Statistics Panel -->
+      <div class="statistics-card dashboard-card me-4 flex-grow-1 mb-4">
+        <div class="statistics-box">
+          <h2 class="text-center">Statistics</h2>
+          <div class="graph-placeholder" style="max-width:660px; margin:auto;">
+            <canvas id="statsChart" width="600" height="400"></canvas>
+
           </div>
-          <%= link_to "📊 Advanced statistics", statistics_path, class: "btn btn-outline-primary" %>
+          <%= link_to "📊 Advanced statistics", statistics_path, class: "btn btn-outline-primary mt-4 d-block mx-auto" %>
         </div>
       </div>
 
-      <%# Tasks Panels %>
-      <div class="right-column">
-        <%# New Task Panel %>
-        <div class="task-form dashboard-card font-main">
-          <%= form_with model: @task, url: tasks_path, local: true do |form| %>
-            <h2 class="text-center mb-3 font-main">New task</h2>
+      <!-- Right Column -->
+      <div class="right-column d-flex flex-column" data-controller="task-modal">
+        <!-- New Task Panel -->
+        <div class="task-form mb-4">
+          <h2 class="text-center mb-3">New task</h2>
+          <form action="<%= tasks_path %>" method="post" autocomplete="off">
+            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
 
-            <%= form.label :time, "Assigned time (min.):" %>
-            <%= form.number_field :time, value: 25, min: 1, required: true, class: "form-control", id: "task_time_input" %>
+            <div class="mb-3">
+              <label for="task_name" class="form-label">Task name:</label>
+              <input type="text" id="task_name" name="task[name]" class="form-control" placeholder="Enter task name" required>
+            </div>
 
-            <fieldset class="mt-3">
-              <legend>Time distribution:</legend>
-
-              <div>
-                <%= form.radio_button :distribution, "even", checked: true, id: "distribution_even" %>
-                <%= form.label :distribution_even, "Evenly" %>
-              </div>
-
-              <div>
-                <%= form.radio_button :distribution, "incremental", id: "distribution_incremental" %>
-                <%= form.label :distribution_incremental, "Incremental" %>
-              </div>
-
-              <div>
-                <%= form.radio_button :distribution, "decremental", id: "distribution_decremental" %>
-                <%= form.label :distribution_decremental, "Decremental" %>
-              </div>
-
-              <div>
-                <%= form.radio_button :distribution, "random", id: "distribution_random" %>
-                <%= form.label :distribution_random, "Random" %>
-              </div>
-            </fieldset>
-            <%= button_tag type: "button", class: "btn mt-3 btn-primary", data: { bs_toggle: "modal", bs_target: "#exampleModalCenter" } do %>
-              Create a New Task
-            <% end %>
-          <% end %>
+            <div class="mb-3 d-flex align-items-center">
+              <label for="quick-task-time" class="form-label me-2 mb-0">Time (min):</label>
+              <input type="number" id="quick-task-time" name="task[time]" class="form-control" style="width: 90px;" min="1" placeholder="25" required>
+            </div>
+            <div class="d-flex">
+              <button type="submit" class="btn btn-outline-primary w-100">
+                <i class="fa fa-plus me-2"></i>Create task
+              </button>
+              <!-- Modal button -->
+              <button type="button" class="btn btn-more" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+                <i class="fa fa-ellipsis-h"></i>
+              </button>
+            </div>
+          </form>
         </div>
+
         <%# Task Modal Form - to be kept outside the New Task Panel - IMPORTANT! %>
-        <div data-controller="task-modal">
+        <div>
           <%= form_with(model: @task, url: tasks_path, local: true) do |form| %>
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -157,26 +79,50 @@
                   <%# Body %>
                   <div class="modal-body">
 
+                    <%# Task name and time - Step 0 %>
+                    <%#= form.hidden_field :name, id: "modal_task_name" %>
+                    <%#= form.hidden_field :time, id: "modal_task_time" %>
+                    <%= hidden_field_tag "task[name]", "", id: "modal_task_name" %>
+                    <%= hidden_field_tag "task[time]", "", id: "modal_task_time" %>
+
                     <%# Step 1 %>
                     <div class="step step-1" data-task-modal-target="step">
-                      <h5>Task Name:</h5>
-                      <%= form.hidden_field :time, id: "hidden_time" %>
-                      <%#= hidden_field_tag :distribution, "", id: "hidden_distribution" %>
-                      <%= form.hidden_field :distribution, id: "hidden_distribution" %>
-                      <%= form.text_field :name, name: 'task[name]', class: "form-control", placeholder: "Enter task name", required: true %>
-                    </div>
-
-                    <%# Step 2 %>
-                    <div class="step step-2 d-none" data-task-modal-target="step">
                       <h5>Number of Sub-Tasks:</h5>
                       <%= form.select :subtask_count, options_for_select([1,2,3,4,5], 1), {}, { class: "form-select", data: { task_modal_target: "subtaskCountSelect", action: "change->task-modal#updateSubtaskCount" } } %>
                     </div>
                     <%= form.hidden_field :subtask_count, data: { task_modal_target: "hiddenSubtaskCount" } %>
 
-                    <%# Step 3 %>
-                    <div class="step step-3 d-none" data-task-modal-target="step">
+                    <%# Step 2 %>
+                    <div class="step step-2 d-none" data-task-modal-target="step">
                       <h5>Sub-task Names:</h5>
                       <div data-task-modal-target="subtaskInputs"></div>
+                    </div>
+
+                    <%# Step 3 %>
+                    <div class="step step-3 d-none" data-task-modal-target="step">
+                      <h5>Time Distribution:</h5>
+                      <div data-task-modal-target="timeDistribution"></div>
+                      <fieldset class="mt-3">
+                        <div>
+                          <%= form.radio_button :distribution, "even", checked: true, id: "distribution_even" %>
+                          <%= form.label :distribution_even, "Evenly" %>
+                        </div>
+
+                        <div>
+                          <%= form.radio_button :distribution, "incremental", id: "distribution_incremental" %>
+                          <%= form.label :distribution_incremental, "Incremental" %>
+                        </div>
+
+                        <div>
+                          <%= form.radio_button :distribution, "decremental", id: "distribution_decremental" %>
+                          <%= form.label :distribution_decremental, "Decremental" %>
+                        </div>
+
+                        <div>
+                          <%= form.radio_button :distribution, "random", id: "distribution_random" %>
+                          <%= form.label :distribution_random, "Random" %>
+                        </div>
+                      </fieldset>
                     </div>
 
                     <%# Step 4 %>
@@ -201,205 +147,6 @@
           <% end %>
         </div>
 
-        <%# Recent Tasks Panel %>
-        <div class="recent-tasks dashboard-card overflow-auto" style="max-height: 200px;">
-          <h3 class="font-main text-center">Recent Tasks</h3>
-          <ul class="task-list">
-            <li>Reading</li>
-            <li>Writing</li>
-            <li>Having a short break</li>
-            <li>Cooking</li>
-            <li>Have to call my boss to tell him that i want to leave my job</li>
-            <li>Feeding my dog</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
-<footer class="footer-bar">
-  <div class="footer-content">
-    <a href="https://twitter.com" target="_blank" aria-label="Twitter">
-      <i class="fab fa-twitter"></i>
-    </a>
-    <a href="https://github.com" target="_blank" aria-label="GitHub">
-      <i class="fab fa-github"></i>
-    </a>
-    <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-      <i class="fab fa-linkedin-in"></i>
-    </a>
-  </div>
-</footer>
--->
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-  .dashboard-page { min-height: 100vh; padding-top: 24px; }
-  .statistics-card, .task-form, .recent-tasks {
-    background: #dbe2ef; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,0,0,0.09); margin-bottom: 18px;
-  }
-  .statistics-card { padding: 24px 20px; }
-  .right-column { min-width: 340px; max-width: 410px; }
-  .task-form { padding: 22px; }
-  .task-form .form-label { font-weight: 600; }
-  .task-form input[type="number"], .task-form input[type="text"] { font-size: 1.1rem; border-radius: 10px; text-align: center; }
-  .task-form .btn-outline-primary, .task-form .btn-primary {
-    font-size: 1.1rem; font-weight: 600; border-radius: 12px; padding: 0.5em 1.3em;
-    border: 2px solid #3B82F6; background: none; color: #3B82F6; transition: background 0.18s, color 0.18s;
-  }
-  .task-form .btn-outline-primary:hover, .task-form .btn-outline-primary:focus,
-  .task-form .btn-primary:hover, .task-form .btn-primary:focus {
-    background: #3B82F6; color: #fff; transform: none !important;
-  }
-  .recent-tasks { padding: 20px; }
-  .recent-tasks ul { padding-left: 1.1rem; }
-  .recent-tasks li { margin-bottom: 5px; }
-  .font-main { font-family: 'Outfit', sans-serif; }
-  .footer-bar { margin-top: 30px; }
-  .footer-content { text-align: center; }
-  .footer-content a { margin: 0 8px; color: #888; font-size: 1.4rem; transition: color 0.13s; }
-  .footer-content a:hover { color: #3B82F6; }
-  .task-form .btn-more { margin-left: 10px; background: #EEE; border: none; color: #444; border-radius: 12px; padding: 0.5em 1.2em; transition: background 0.15s; }
-  .task-form .btn-more:hover { background: #DDD; color: #3B82F6; }
-</style>
-
-<div id="vanta-background"></div>
-<div class="dashboard-page font-main">
-  <div class="container">
-    <h1 class="text-center mt-3">Overview</h1>
-    <div class="top-section d-flex flex-wrap">
-      <!-- Statistics Panel -->
-      <div class="statistics-card dashboard-card me-4 flex-grow-1 mb-4">
-        <div class="statistics-box">
-          <h2 class="text-center">Statistics</h2>
-          <div class="graph-placeholder" style="max-width:660px; margin:auto;">
-            <canvas id="statsChart" width="600" height="400"></canvas>
-
-          </div>
-          <%= link_to "📊 Advanced statistics", statistics_path, class: "btn btn-outline-primary mt-4 d-block mx-auto" %>
-        </div>
-      </div>
-      <!-- Right Column -->
-      <div class="right-column d-flex flex-column">
-        <!-- New Task Panel -->
-        <div class="task-form mb-4">
-          <h2 class="text-center mb-3">New task</h2>
-          <form action="<%= tasks_path %>" method="post" autocomplete="off">
-            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-
-            <div class="mb-3">
-              <label for="task_name" class="form-label">Task name:</label>
-              <input type="text" id="task_name" name="task[name]" class="form-control" placeholder="Enter task name" required>
-            </div>
-
-            <div class="mb-3 d-flex align-items-center">
-              <label for="quick-task-time" class="form-label me-2 mb-0">Time (min):</label>
-              <input type="number" id="quick-task-time" name="task[time]" class="form-control" style="width: 90px;" min="1" value="25" required>
-            </div>
-            <fieldset class="mt-2 mb-3">
-              <legend class="mb-1" style="font-size: 1rem;">Time distribution:</legend>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="distribution" id="dist-even" value="even" checked>
-                <label class="form-check-label" for="dist-even">Evenly</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="distribution" id="dist-incremental" value="incremental">
-                <label class="form-check-label" for="dist-incremental">Incremental</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="distribution" id="dist-decremental" value="decremental">
-                <label class="form-check-label" for="dist-decremental">Decremental</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="radio" name="distribution" id="dist-random" value="random">
-                <label class="form-check-label" for="dist-random">Random</label>
-              </div>
-            </fieldset>
-            <div class="d-flex">
-              <button type="submit" class="btn btn-outline-primary w-100">
-                <i class="fa fa-plus me-2"></i>Create task
-              </button>
-              <!-- bouton pour ouvrir la modal -->
-              <button type="button" class="btn btn-more" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
-                <i class="fa fa-ellipsis-h"></i>
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- Modal multistep -->
-        <div data-controller="task-modal task-form-submit">
-          <form
-            action="<%= tasks_path %>"
-            method="post"
-            class="m-0"
-            id="task-modal-form"
-            data-task-form-submit-time-input-selector-value="#main-task-time"
-          >
-            <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-            <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-              <div class="modal-dialog modal-dialog-centered modal-lg">
-                <div class="modal-content">
-                  <!-- Header -->
-                  <div class="modal-header">
-                    <h5 class="modal-title">Create a Task</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <!-- Body multistep -->
-                  <div class="modal-body">
-
-                    <!-- Step 1: Task Name & Time -->
-                    <div class="step step-1" data-task-modal-target="step">
-                      <label for="task_name_modal">Task Name:</label>
-                      <input type="text" id="task_name_modal" name="task[name]" class="form-control" placeholder="Enter task name" required />
-                      <div class="d-flex align-items-center mt-3 mb-2">
-                        <label for="main-task-time" class="me-2 mb-0">Assigned time (min.):</label>
-                        <input type="number" id="main-task-time" name="task[time]" class="form-control" min="1" value="25" required />
-                      </div>
-                    </div>
-
-                    <!-- Step 2: Number of Subtasks -->
-                    <div class="step step-2 d-none" data-task-modal-target="step">
-                      <label for="subtask_count">Number of Sub-Tasks:</label>
-                      <select id="subtask_count" name="task[subtask_count]" class="form-select" data-task-modal-target="subtaskCountSelect" data-action="change->task-modal#updateSubtaskCount">
-                        <% (0..5).each do |i| %>
-                          <option value="<%= i %>"><%= i %></option>
-                        <% end %>
-                      </select>
-                      <input type="hidden" name="task[subtask_count]" value="0" data-task-modal-target="hiddenSubtaskCount" />
-                    </div>
-
-                    <!-- Step 3: Subtask Names -->
-                    <div class="step step-3 d-none" data-task-modal-target="step">
-                      <label>Sub-task Names:</label>
-                      <div data-task-modal-target="subtaskInputs"></div>
-                    </div>
-
-                    <!-- Step 4: Task Summary -->
-                    <div class="step step-4 d-none" data-task-modal-target="step">
-                      <label for="task_description">Task Summary:</label>
-                      <textarea id="task_description" name="task[description]" class="form-control mb-3" rows="3" placeholder="Task summary..." required></textarea>
-                      <button type="submit" class="btn btn-success mt-3">Create Task</button>
-                    </div>
-                  </div>
-
-                  <!-- Footer -->
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-task-modal-target="prevBtn" data-action="click->task-modal#prev">Back</button>
-                    <button type="button" class="btn btn-primary" data-task-modal-target="nextBtn" data-action="click->task-modal#next">Next</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </form>
-        </div>
-
         <!-- Recent Tasks Panel -->
         <div class="recent-tasks dashboard-card overflow-auto" style="max-height: 210px;">
           <h3 class="text-center mb-3">Recent Tasks</h3>
@@ -421,61 +168,3 @@
     <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
   </div>
 </footer>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-
-    const ctx = document.getElementById('statsChart').getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-    gradient.addColorStop(0, '#7C3AED');
-    gradient.addColorStop(1, '#3B82F6');
-
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-        datasets: [{
-          label: 'Completed Tasks',
-          data: [3, 7, 4, 5, 6],
-          backgroundColor: gradient,
-          borderRadius: 10,
-          hoverBackgroundColor: '#4F46E5'
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            labels: {
-              color: '#374151',
-              font: {
-                family: 'Outfit',
-                size: 14,
-                weight: 'bold'
-              }
-            }
-          },
-          tooltip: {
-            backgroundColor: '#1F2937',
-            titleColor: '#E5E7EB',
-            bodyColor: '#E5E7EB',
-            cornerRadius: 6,
-            padding: 10
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color: '#4B5563', font: { family: 'Outfit', size: 13 } },
-            grid: { display: false }
-          },
-          y: {
-            beginAtZero: true,
-            ticks: { color: '#4B5563', font: { family: 'Outfit', size: 13 } },
-            grid: { color: '#E5E7EB' }
-          }
-        },
-        animation: { duration: 1000, easing: 'easeOutQuart' }
-      }
-    });
-  });
-</script>

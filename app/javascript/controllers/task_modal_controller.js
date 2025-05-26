@@ -1,97 +1,9 @@
-// import { Controller } from "@hotwired/stimulus"
-
-// // Connects to data-controller="task-modal"
-// export default class extends Controller {
-//   static targets = [
-//     "step", "nextBtn", "prevBtn", "subtaskCountSelect", "subtaskInputs", "hiddenSubtaskCount"
-//   ];
-
-//   connect() {
-//     this.currentStep = 1;
-//     this.totalSteps = 4;
-//     this.showStep(this.currentStep);
-
-//     const modalElement = document.getElementById('exampleModalCenter');
-//     if (modalElement) {
-//       modalElement.addEventListener('show.bs.modal', () => {
-//         this.currentStep = 1;
-//         this.showStep(this.currentStep);
-
-//         // Reset the form fields
-//         const form = this.element.querySelector('form');
-//         if (form) {
-//           form.reset();
-
-//           // Clear dynamically generated subtask inputs container (if any)
-//           if (this.hasSubtaskInputsTarget) {
-//             this.subtaskInputsTarget.innerHTML = '';
-//           }
-
-//           // Reset hidden field to default value if needed
-//           if (this.hasHiddenSubtaskCountTarget) {
-//             this.hiddenSubtaskCountTarget.value = this.subtaskCountSelectTarget.value;
-//           }
-//         }
-//       });
-//     }
-//   }
-
-//   showStep(step) {
-//     this.stepTargets.forEach((el, index) => {
-//       el.classList.toggle('d-none', index !== step - 1);
-//     });
-
-//     this.prevBtnTarget.disabled = step === 1;
-//     this.nextBtnTarget.style.display = step === this.totalSteps ? 'none' : 'inline-block';
-//   }
-
-//   next() {
-//     if (this.currentStep < this.totalSteps) {
-//       this.currentStep++;
-
-//       if (this.currentStep === 3) {
-//         const count = parseInt(this.subtaskCountSelectTarget.value);
-//         this.generateSubtaskInputs(count);
-//       }
-
-//       this.showStep(this.currentStep);
-//     }
-//   }
-
-//   prev() {
-//     if (this.currentStep > 1) {
-//       this.currentStep--;
-//       this.showStep(this.currentStep);
-//     }
-//   }
-
-//   updateSubtaskCount() {
-//     this.hiddenSubtaskCountTarget.value = this.subtaskCountSelectTarget.value;
-//     if (this.currentStep >= 3) {
-//       this.generateSubtaskInputs(parseInt(this.subtaskCountSelectTarget.value));
-//     }
-//   }
-
-//   generateSubtaskInputs(count) {
-//     this.subtaskInputsTarget.innerHTML = '';
-//     // modifer
-//     for (let i = 0; i < count; i++) {
-//       const input = document.createElement('input');
-//       input.type = 'text';
-//       input.name = `task[subtasks_attributes][${i}][name]`; // commence à 0 !
-//       input.placeholder = `Sous-tâche ${i + 1}`;
-//       input.className = 'form-control mb-2';
-//       input.required = true;
-//       this.subtaskInputsTarget.appendChild(input);
-//     }
-
-// }
-
 import { Controller } from "@hotwired/stimulus"
 
+// Connects to data-controller="task-modal"
 export default class extends Controller {
   static targets = [
-    "step", "nextBtn", "prevBtn", "subtaskCountSelect", "subtaskInputs", "hiddenSubtaskCount"
+    "step", "nextBtn", "prevBtn", "subtaskCountSelect", "subtaskInputs", "hiddenSubtaskCount", "timeDistribution"
   ];
 
   connect() {
@@ -99,24 +11,49 @@ export default class extends Controller {
     this.totalSteps = 4;
     this.showStep(this.currentStep);
 
-
     const modalElement = document.getElementById('exampleModalCenter');
     if (modalElement) {
       modalElement.addEventListener('show.bs.modal', () => {
         this.currentStep = 1;
         this.showStep(this.currentStep);
 
+        this.populateFields();
 
-        const form = this.element;
+        // Reset the form fields
+        const form = this.element.querySelector('form');
         if (form) {
           form.reset();
 
+          // Clear dynamically generated subtask inputs container (if any)
           if (this.hasSubtaskInputsTarget) {
             this.subtaskInputsTarget.innerHTML = '';
           }
-          if (this.hasHiddenSubtaskCountTarget && this.hasSubtaskCountSelectTarget) {
-            this.hiddenSubtaskCountTarget.value = this.subtaskCountSelectTarget.value;
+
+          // Reset hidden field and subtask count to default value 1
+          if (this.hasSubtaskCountSelectTarget) {
+            this.subtaskCountSelectTarget.value = "1";
           }
+          if (this.hasHiddenSubtaskCountTarget) {
+            this.hiddenSubtaskCountTarget.value = "1";
+          }
+
+          // Reset Time Distribution
+          const distributionRadios = form.querySelectorAll('input[name="task[distribution]"]');
+          distributionRadios.forEach(radio => {
+            radio.checked = radio.value === "even";
+          });
+
+          // Clear task description
+          const description = form.querySelector('textarea[name="task[description]"]');
+          if (description) description.value = "";
+
+          // Populate hidden name/time from quick form
+          const name = document.querySelector("#task_name")?.value;
+          const time = document.querySelector("#quick-task-time")?.value;
+          const modalName = document.querySelector("#modal_task_name");
+          const modalTime = document.querySelector("#modal_task_time");
+          if (modalName && name) modalName.value = name;
+          if (modalTime && time) modalTime.value = time;
         }
       });
     }
@@ -132,22 +69,11 @@ export default class extends Controller {
   }
 
   next() {
-    if (this.currentStep === 1) {
-      const taskNameInput = this.element.querySelector('input[name="task[name]"]');
-      if (!taskNameInput.value.trim()) {
-        taskNameInput.classList.add('is-invalid');
-        taskNameInput.focus();
-        return;
-      } else {
-        taskNameInput.classList.remove('is-invalid');
-      }
-    }
-
     if (this.currentStep < this.totalSteps) {
       this.currentStep++;
 
-      if (this.currentStep === 3) {
-        const count = parseInt(this.subtaskCountSelectTarget.value, 10);
+      if (this.currentStep === 2) {
+        const count = parseInt(this.subtaskCountSelectTarget.value);
         this.generateSubtaskInputs(count);
       }
 
@@ -165,20 +91,41 @@ export default class extends Controller {
   updateSubtaskCount() {
     this.hiddenSubtaskCountTarget.value = this.subtaskCountSelectTarget.value;
     if (this.currentStep >= 3) {
-      this.generateSubtaskInputs(parseInt(this.subtaskCountSelectTarget.value, 10));
+      this.generateSubtaskInputs(parseInt(this.subtaskCountSelectTarget.value));
     }
   }
 
   generateSubtaskInputs(count) {
     this.subtaskInputsTarget.innerHTML = '';
-    for (let i = 0; i < count; i++) {
+
+    for (let i = 1; i <= count; i++) {
       const input = document.createElement('input');
       input.type = 'text';
       input.name = `task[subtasks_attributes][${i}][name]`;
-      input.placeholder = `Sous-tâche ${i + 1}`;
+      input.placeholder = `Sub-task ${i}`;
       input.className = 'form-control mb-2';
       input.required = true;
       this.subtaskInputsTarget.appendChild(input);
+    }
+  }
+
+  populateFields() {
+    // if (event) event.preventDefault();
+
+    const nameInput = document.querySelector("#task_name")
+    const timeInput = document.querySelector("#quick-task-time")
+    const modalName = document.querySelector("#modal_task_name")
+    const modalTime = document.querySelector("#modal_task_time")
+
+    console.log("Populating fields...");
+
+    if (nameInput && timeInput && modalName && modalTime) {
+      modalName.value = nameInput.value
+      modalTime.value = timeInput.value
+      // console.log("Name set to:", modalName.value)
+      // console.log("Time set to:", modalTime.value)
+    } else {
+      // console.warn("One or more elements not found.")
     }
   }
 }
