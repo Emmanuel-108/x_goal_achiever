@@ -5,6 +5,18 @@ class Task < ApplicationRecord
   has_many :statistics, as: :input
   attr_accessor :distribution
 
+  before_save :assign_time_distribution
+
+  private
+
+  def assign_time_distribution
+    return if subtasks.blank? || time.blank? || distribution.blank?
+
+    distribute_time!(time, distribution)
+  end
+
+  public
+
   def distribute_time!(total_time, distribution_type)
     count = subtasks.size
     return if count.zero? || total_time.zero?
@@ -34,7 +46,8 @@ class Task < ApplicationRecord
       # subtask.time = times[index].minutes.from_now
       # subtask.time = (Time.current + times[index].minutes).strftime("%H:%M:%S")
       minutes = times[index]
-      subtask.time = "%02d:%02d:00" % [minutes / 60, minutes % 60]
+      # subtask.time = "%02d:%02d:00" % [minutes / 60, minutes % 60]
+      subtask.time = minutes
       subtask.save
     end
   end

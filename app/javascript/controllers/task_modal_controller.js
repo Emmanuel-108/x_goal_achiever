@@ -77,6 +77,12 @@ export default class extends Controller {
         this.generateSubtaskInputs(count);
       }
 
+      if (this.currentStep === 3) {
+        const totalTime = parseInt(document.getElementById("modal_task_time")?.value);
+        const distribution = document.querySelector("input[name='task[distribution]']:checked")?.value || "even";
+        this.assignTimeDistribution(totalTime, distribution);
+      }
+
       this.showStep(this.currentStep);
     }
   }
@@ -117,7 +123,7 @@ export default class extends Controller {
     const modalName = document.querySelector("#modal_task_name")
     const modalTime = document.querySelector("#modal_task_time")
 
-    console.log("Populating fields...");
+    // console.log("Populating fields...");
 
     if (nameInput && timeInput && modalName && modalTime) {
       modalName.value = nameInput.value
@@ -127,5 +133,43 @@ export default class extends Controller {
     } else {
       // console.warn("One or more elements not found.")
     }
+  }
+
+  assignTimeDistribution(totalTime, distributionType) {
+    const count = this.subtaskInputsTarget.querySelectorAll("input").length;
+    if (count === 0 || !totalTime || isNaN(totalTime)) return;
+
+    let times = [];
+
+    switch (distributionType) {
+      case "even":
+        times = Array(count).fill(Math.floor(totalTime / count));
+        break;
+      case "incremental":
+        let baseInc = totalTime / (count * (count + 1) / 2);
+        times = Array.from({ length: count }, (_, i) => Math.round(baseInc * (i + 1)));
+        break;
+      case "decremental":
+        let baseDec = totalTime / (count * (count + 1) / 2);
+        times = Array.from({ length: count }, (_, i) => Math.round(baseDec * (count - i)));
+        break;
+      case "random":
+        let randoms = Array.from({ length: count }, () => Math.random());
+        let sum = randoms.reduce((a, b) => a + b, 0);
+        times = randoms.map(r => Math.round((r / sum) * totalTime));
+        break;
+      default:
+        times = Array(count).fill(0);
+    }
+
+    const timeInputs = this.subtaskInputsTarget.querySelectorAll("input");
+
+    timeInputs.forEach((input, index) => {
+      const hidden = document.createElement("input");
+      hidden.type = "hidden";
+      hidden.name = `task[subtasks_attributes][${index + 1}][time]`;
+      hidden.value = times[index];
+      this.subtaskInputsTarget.appendChild(hidden);
+    });
   }
 }
