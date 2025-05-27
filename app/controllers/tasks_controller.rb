@@ -1,43 +1,43 @@
+# app/controllers/tasks_controller.rb
+
 class TasksController < ApplicationController
-  # before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :set_task, only: [:show, :edit, :update, :destroy]
 
   def index
     @tasks = Task.all
   end
 
   def show
-    @task = Task.find(params[:id])
   end
 
   def new
     @task = Task.new
+    3.times { @task.subtasks.build }
   end
 
   def create
     @task = current_user.tasks.new(task_params)
-    @task.distribute_time!(params[:time].to_i, params[:distribution])
+    @task.distribute_time!(@task.time.to_i, @task.distribution) if @task.time.present? && @task.distribution.present?
 
     if @task.save
       redirect_to new_task_statistic_path(@task), notice: "Task and subtasks successfully added! 📝"
     else
-      # Rails.logger.error "Task save failed: #{@task.errors.full_messages.to_sentence}"
       render :new, status: :unprocessable_entity
     end
   end
 
   def edit
-    @task = Task.find(params[:id])
   end
 
   def update
-    @task = Task.find(params[:id])
-    @task.update(task_params)
-    redirect_to task_path(@task)
+    if @task.update(task_params)
+      redirect_to @task
+    else
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def destroy
-    @task = Task.find(params[:id])
-
     if @task.user_id == current_user.id
       @task.destroy
       redirect_to tasks_path, notice: "Task successfully deleted! 📋"
@@ -48,16 +48,17 @@ class TasksController < ApplicationController
 
   private
 
+  def set_task
+    @task = Task.find(params[:id])
+  end
+
   def task_params
     params.require(:task).permit(
       :name,
       :description,
       :time,
-      subtasks_attributes: [:name, :description, :time]
+      :distribution,
+      subtasks_attributes: [:name, :description, :time, :_destroy]
     )
   end
-
-  # def set_task
-  #   @task = Task.find(params[:id])
-  # end
 end
