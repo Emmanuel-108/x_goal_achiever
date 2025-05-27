@@ -2,6 +2,9 @@ source "https://rubygems.org"
 
 ruby "3.3.5"
 
+# Gem for debug
+gem "ostruct"
+
 # Date grouper gem
 gem 'groupdate'
 
