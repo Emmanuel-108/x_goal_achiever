@@ -1,8 +1,11 @@
 <div class="focus-bg d-flex justify-content-center align-items-center">
   <div class="focus-box position-relative">
+    <!-- Bouton X rond custom -->
+    <button class="focus-close-btn" onclick="window.location.href='/tasks'" aria-label="Fermer">
+      <span aria-hidden="true">&times;</span>
+    </button>
 
-    <button class="btn btn-close position-absolute end-0 m-3" onclick="window.location.href='/tasks'"></button>
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="focus-header d-flex justify-content-between align-items-center mb-4">
       <h5 class="mb-0">Focus panel</h5>
       <a href="https://open.spotify.com" target="_blank" class="btn-spotify d-flex align-items-center">
         <i class="fab fa-spotify mr-2"></i> Spotify
@@ -39,7 +42,6 @@
 </div>
 
 <script>
-
   function startFocusTimer() {
     let duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
     const display = document.getElementById('focus-timer');
@@ -60,7 +62,6 @@
         endModal.show();
       }
     }
-
 
     if (window.focusPanelTimerId) clearTimeout(window.focusPanelTimerId);
     window.focusPanelTimerId = setTimeout(updateTimer, 0);
