@@ -20,7 +20,7 @@
         <%= hidden_field_tag :input_id, @task.id %>
         <%= hidden_field_tag :start_time, Time.current %>
         <%= hidden_field_tag :duration, focus_minutes(@task) %>
-        <button type="submit" id="finish-btn" class="btn btn-success mt-4 d-none">Enregistrer la session</button>
+        <%# <button type="submit" id="finish-btn" class="btn btn-success mt-4 d-none">Enregistrer la session</button> %>
       </form>
     </div>
   </div>

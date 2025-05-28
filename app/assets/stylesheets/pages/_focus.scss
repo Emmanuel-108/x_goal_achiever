@@ -77,3 +77,35 @@
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   transition: all 0.3s ease;
 }
+
+.focus-close-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 36px; height: 36px;
+  border: none;
+  background: #dbe2ef;
+  color: #3f72af;
+  border-radius: 50%;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s, box-shadow 0.2s;
+
+  span {
+    display: block;
+    font-size: 1.7rem;
+    line-height: 1;
+    font-weight: bold;
+    margin-top: -2px;
+  }
+
+  &:hover, &:focus {
+    background: #3f72af;
+    color: #fff;
+    outline: none;
+    box-shadow: 0 4px 16px rgba(63, 114, 175, 0.13);
+  }
+}
