@@ -13,6 +13,10 @@
     </div>
     <div class="focus-content text-center">
       <h2 class="mb-4"><%= @task.name %></h2>
+      <%# Added line %>
+      <script>
+        const subtasks = <%= raw(@task.subtasks.order(:id).pluck(:name, :time).map { |name, time| { name: name, time: time } }.to_json) %>;
+      </script>
       <div class="timer-display" id="focus-timer">00:00:00</div>
       <form method="post" action="<%= statistics_path %>" id="focus-form">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
@@ -41,12 +45,43 @@
   </div>
 </div>
 
+<%# Subtasks MODAL %>
+<% @task.subtasks.order(:id).each_with_index do |subtask, index| %>
+  <div class="modal fade" id="subtaskModal<%= index %>" tabindex="-1" aria-labelledby="subtaskModalLabel<%= index %>" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content text-center">
+        <div class="modal-header">
+          <h5 class="modal-title" id="subtaskModalLabel<%= index %>">⏱️ Sous-tâche terminée</h5>
+        </div>
+        <div class="modal-body">
+          <p>Tu as terminé : "<%= subtask.name %>"</p>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
+
 <script>
   function startFocusTimer() {
     let duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
     const display = document.getElementById('focus-timer');
     const finishBtn = document.getElementById('finish-btn');
     let timerId = null;
+    let elapsed = 0;
+
+    // Set timers for each subtask
+    if (typeof subtasks !== "undefined") {
+      let cumulative = 0;
+
+      subtasks.forEach((subtask, index) => {
+        cumulative += subtask.time * 60;
+
+        setTimeout(() => {
+          const popup = new bootstrap.Modal(document.getElementById(`subtaskModal${index}`));
+          popup.show();
+        }, cumulative * 1000);
+      });
+    }
 
     function updateTimer() {
       let h = Math.floor(duration / 3600);
@@ -55,6 +90,7 @@
       display.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
       if (duration > 0) {
         duration--;
+        elapsed++;
         timerId = setTimeout(updateTimer, 1000);
       } else {
         finishBtn.classList.remove("d-none");
