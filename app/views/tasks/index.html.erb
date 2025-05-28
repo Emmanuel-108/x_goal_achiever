@@ -3,19 +3,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<div id="vanta-background"></div>
-
-<%# CSS style of the dashboard.scss %>
-<%= stylesheet_link_tag "dashboard", "data-turbo-track": "reload" %>
-
-<%# Data loading to the Graph %>
-<script type="application/json" id="tasks-data">
-  <%#= @tasks.group_by_day(:created_at, range: 1.week.ago..Time.now).count.to_json.html_safe %>
-  <%= @tasks.group_by_day(:created_at, range: 4.days.ago.beginning_of_day..Time.now).count.to_json.html_safe %>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
+<!-- VANTA + THREE.js -->
+<div id="vanta-background" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+<script>
+  // BG Vanta Clouds
+  function loadVantaBG() {
+    if (window.vantaBG && typeof window.vantaBG.destroy === "function") {
+      window.vantaBG.destroy();
+      window.vantaBG = null;
+    }
+    window.vantaBG = VANTA.CLOUDS({
+      el: "#vanta-background",
+      mouseControls: true,
+      touchControls: true,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      highlightColor: 0x5f68c3, // bleu-mauve
+      midtoneColor: 0xa18cd1,   // mauve
+      lowlightColor: 0x4fc3f7,  // bleu clair
+      baseColor: 0xffffff
+    });
+  }
+  document.addEventListener("turbo:load", loadVantaBG);
+  document.addEventListener("DOMContentLoaded", loadVantaBG);
 </script>
 
-<%# Chart JS moved to application.js >> statistics_graph_index.js %>
+<%= stylesheet_link_tag "dashboard", "data-turbo-track": "reload" %>
+
+<script type="application/json" id="tasks-data">
+  <%= @tasks.group_by_day(:created_at, range: 4.days.ago.beginning_of_day..Time.now).count.to_json.html_safe %>
+</script>
 <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
 <div class="dashboard-page font-main">
@@ -26,9 +47,8 @@
       <div class="statistics-card dashboard-card me-4 flex-grow-1 mb-4">
         <div class="statistics-box">
           <h2 class="text-center">Statistics</h2>
-          <div class="graph-placeholder" style="max-width:660px; margin:auto;">
-            <canvas id="statsChart" width="600" height="400"></canvas>
-
+          <div class="graph-placeholder" style="max-width:660px; margin:auto; width: 600px; height: 400px;">
+            <canvas id="statsChart" width="600" height="400" style="width: 600px; height: 400px;"></canvas>
           </div>
           <%= link_to "📊 Advanced statistics", statistics_path, class: "btn btn-outline-primary mt-4 d-block mx-auto" %>
         </div>
@@ -41,12 +61,10 @@
           <h2 class="text-center mb-3">New task</h2>
           <form action="<%= tasks_path %>" method="post" autocomplete="off">
             <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-
             <div class="mb-3">
               <label for="task_name" class="form-label">Task name:</label>
               <input type="text" id="task_name" name="task[name]" class="form-control" placeholder="Enter task name" required>
             </div>
-
             <div class="mb-3 d-flex align-items-center">
               <label for="quick-task-time" class="form-label me-2 mb-0">Time (min):</label>
               <input type="number" id="quick-task-time" name="task[time]" class="form-control" style="width: 90px;" min="1" placeholder="25" required>
@@ -62,43 +80,28 @@
             </div>
           </form>
         </div>
-
-        <%# Task Modal Form - to be kept outside the New Task Panel - IMPORTANT! %>
+        <!-- Task Modal Form -->
         <div>
           <%= form_with(model: @task, url: tasks_path, local: true) do |form| %>
             <div class="modal fade" id="exampleModalCenter" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
-
-                  <%# Header %>
                   <div class="modal-header">
                     <h5 class="modal-title">Create a Task</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
-
-                  <%# Body %>
                   <div class="modal-body">
-
-                    <%# Task name and time - Step 0 %>
-                    <%#= form.hidden_field :name, id: "modal_task_name" %>
-                    <%#= form.hidden_field :time, id: "modal_task_time" %>
                     <%= hidden_field_tag "task[name]", "", id: "modal_task_name" %>
                     <%= hidden_field_tag "task[time]", "", id: "modal_task_time" %>
-
-                    <%# Step 1 %>
                     <div class="step step-1" data-task-modal-target="step">
                       <h5>Number of Sub-Tasks:</h5>
                       <%= form.select :subtask_count, options_for_select([1,2,3,4,5], 1), {}, { class: "form-select", data: { task_modal_target: "subtaskCountSelect", action: "change->task-modal#updateSubtaskCount" } } %>
                     </div>
                     <%= form.hidden_field :subtask_count, data: { task_modal_target: "hiddenSubtaskCount" } %>
-
-                    <%# Step 2 %>
                     <div class="step step-2 d-none" data-task-modal-target="step">
                       <h5>Sub-task Names:</h5>
                       <div data-task-modal-target="subtaskInputs"></div>
                     </div>
-
-                    <%# Step 3 %>
                     <div class="step step-3 d-none" data-task-modal-target="step">
                       <h5>Time Distribution:</h5>
                       <div data-task-modal-target="timeDistribution"></div>
@@ -107,56 +110,47 @@
                           <%= form.radio_button :distribution, "even", checked: true, id: "distribution_even" %>
                           <%= form.label :distribution_even, "Evenly" %>
                         </div>
-
                         <div>
                           <%= form.radio_button :distribution, "incremental", id: "distribution_incremental" %>
                           <%= form.label :distribution_incremental, "Incremental" %>
                         </div>
-
                         <div>
                           <%= form.radio_button :distribution, "decremental", id: "distribution_decremental" %>
                           <%= form.label :distribution_decremental, "Decremental" %>
                         </div>
-
                         <div>
                           <%= form.radio_button :distribution, "random", id: "distribution_random" %>
                           <%= form.label :distribution_random, "Random" %>
                         </div>
                       </fieldset>
                     </div>
-
-                    <%# Step 4 %>
                     <div class="step step-4 d-none" data-task-modal-target="step">
                       <h5>Setup Task:</h5>
                       <p><strong>Task Summary:</strong></p>
                       <%= form.text_area :description, name: 'task[description]', class: "form-control mb-3", rows: 4, placeholder: "Task summary..." %>
                       <%= form.submit "Create Task", class: "btn btn-success" %>
                     </div>
-
                   </div>
-
-                  <%# Footer %>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-task-modal-target="prevBtn" data-action="click->task-modal#prev">Back</button>
                     <button type="button" class="btn btn-primary" data-task-modal-target="nextBtn" data-action="click->task-modal#next">Next</button>
                   </div>
-
                 </div>
               </div>
             </div>
           <% end %>
         </div>
-
         <!-- Recent Tasks Panel -->
-        <div class="recent-tasks dashboard-card overflow-auto" style="max-height: 210px;">
+        <div class="recent-tasks dashboard-card">
           <h3 class="text-center mb-3">Recent Tasks</h3>
-          <ul class="task-list">
-            <% @tasks.order(created_at: :desc).limit(10).each do |task| %>
-              <li><%= task.name %></li>
-            <% end %>
-          </ul>
+          <div class="recent-tasks-inner">
+            <ul class="task-list">
+              <% @tasks.order(created_at: :desc).limit(10).each do |task| %>
+                <li><%= task.name %></li>
+              <% end %>
+            </ul>
+          </div>
         </div>
-      </div>
     </div>
   </div>
 </div>
@@ -168,3 +162,80 @@
     <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
   </div>
 </footer>
+
+<script>
+function loadStatsChart() {
+  const canvas = document.getElementById("statsChart");
+  if (!canvas) return;
+
+  if (window.statsChartInstance) {
+    try { window.statsChartInstance.destroy(); } catch(e) {}
+    window.statsChartInstance = null;
+  }
+
+  const dataElement = document.getElementById("tasks-data");
+  if (!dataElement) return;
+
+  const chartData = JSON.parse(dataElement.textContent);
+  const labels = Object.keys(chartData);
+  const values = Object.values(chartData);
+
+  // Dégradé bleu-mauve
+  const ctx = canvas.getContext("2d");
+  let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, "#5f68c3"); // Bleu-mauve
+  gradient.addColorStop(0.5, "#a18cd1"); // Mauve
+  gradient.addColorStop(1, "#4fc3f7"); // Bleu ciel
+
+  window.statsChartInstance = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "Tâches créées",
+        data: values,
+        backgroundColor: gradient,
+        borderColor: "#5f68c3",
+        borderWidth: 1.5,
+        borderRadius: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: true,
+          mode: "index",
+          intersect: false,
+          animation: false
+        },
+        zoom: {
+          zoom: {
+            wheel: { enabled: true },
+            pinch: { enabled: true },
+            mode: "x"
+          },
+          pan: { enabled: true, mode: "x" }
+        }
+      },
+      hover: { mode: "nearest", intersect: true, animationDuration: 0 },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: "#dbe2ef" },
+          ticks: { color: "#112D4E" }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: "#112D4E" }
+        }
+      }
+    }
+  });
+}
+document.addEventListener("turbo:load", loadStatsChart);
+document.addEventListener("DOMContentLoaded", loadStatsChart);
+</script>
