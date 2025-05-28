@@ -29,7 +29,6 @@ document.addEventListener("turbo:load", initVantaStatistics);
 document.addEventListener("DOMContentLoaded", initVantaStatistics);
 </script>
 
-<!-- Le reste de ta page ici ! -->
 <h2 class="mb-4">📊 Performance Overview (Last 7 Days)</h2>
 <canvas id="performanceChart" height="120"></canvas>
 
@@ -40,7 +39,6 @@ document.addEventListener("DOMContentLoaded", initVantaStatistics);
 document.addEventListener("turbo:load", function() {
   if (!document.getElementById('performanceChart')) return;
 
-  // ⚡️ Détruit le chart précédent si présent
   if (window.performanceChartInstance) {
     window.performanceChartInstance.destroy();
     window.performanceChartInstance = null;
@@ -58,7 +56,6 @@ document.addEventListener("turbo:load", function() {
     current.avg > best.avg ? current : best, stats[0]
   );
 
-  // Message motivant
   let oldMsg = document.getElementById('best-day-msg');
   if (oldMsg) oldMsg.remove();
   const msg = document.createElement("p");
