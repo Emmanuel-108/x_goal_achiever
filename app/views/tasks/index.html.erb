@@ -23,7 +23,7 @@
     <div class="top-section d-flex flex-wrap">
 
       <!-- Statistics Panel -->
-      <div class="statistics-card dashboard-card me-4 flex-grow-1 mb-4">
+      <div class="statistics-card dashboard-card me-4 flex-grow-1 ">
         <div class="statistics-box">
           <h2 class="text-center">Statistics</h2>
           <div class="graph-placeholder" style="max-width:660px; margin:auto;">
@@ -37,7 +37,7 @@
       <!-- Right Column -->
       <div class="right-column d-flex flex-column" data-controller="task-modal">
         <!-- New Task Panel -->
-        <div class="task-form mb-4">
+        <div class="task-form">
           <h2 class="text-center mb-3">New task</h2>
           <form action="<%= tasks_path %>" method="post" autocomplete="off">
             <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
