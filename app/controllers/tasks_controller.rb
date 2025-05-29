@@ -40,11 +40,21 @@ class TasksController < ApplicationController
   def destroy
     if @task.user_id == current_user.id
       @task.destroy
-      redirect_to tasks_path, notice: "Task successfully deleted! 📋"
+      respond_to do |format|
+        format.turbo_stream {
+          render inline: "<turbo-stream action='remove' target='#{helpers.dom_id(@task)}'></turbo-stream>"
+        }
+        format.html { redirect_to tasks_path, notice: "Task successfully deleted! 📋" }
+      end
     else
-      redirect_to tasks_path, alert: "You don't have permission to delete this task."
+      respond_to do |format|
+        format.turbo_stream { head :unauthorized }
+        format.html { redirect_to tasks_path, alert: "You don't have permission to delete this task." }
+      end
     end
   end
+
+
 
   private
 

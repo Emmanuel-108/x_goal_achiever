@@ -146,9 +146,18 @@
           <div class="recent-tasks-inner">
             <ul class="task-list">
               <% @tasks.order(created_at: :desc).limit(10).each do |task| %>
-                <li><%= task.name %></li>
+                <li id="<%= dom_id(task) %>" class="recent-task-item d-flex justify-content-between align-items-center">
+                  <span><%= task.name %></span>
+                  <%= button_to task_path(task),
+                      method: :delete,
+                      data: { turbo_confirm: "Delete this task?" },
+                      class: "btn btn-sm btn-danger recent-task-delete-btn" do %>
+                    <i class="fa fa-trash"></i>
+                  <% end %>
+                </li>
               <% end %>
             </ul>
+
           </div>
         </div>
     </div>
