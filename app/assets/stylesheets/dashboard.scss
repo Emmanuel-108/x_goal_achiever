@@ -17,7 +17,41 @@
 .task-form .btn-primary:hover, .task-form .btn-primary:focus {
   background: #3B82F6; color: #fff; transform: none !important;
 }
-.recent-tasks { padding: 20px; }
+.recent-tasks {
+  padding: 20px;
+  position: relative;
+  overflow: visible; // on enlève overflow auto ici !
+  max-height: none;
+}
+
+.recent-tasks-inner {
+  max-height: 210px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 12px; // coupe bien la scrollbar
+  background: transparent;
+
+  // Scrollbar styles
+  scrollbar-gutter: stable both-edges;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    background: #e3e6ee;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #b6bedc;
+    border-radius: 10px;
+    border: 2px solid #dbe2ef;
+  }
+  &::-webkit-scrollbar-track {
+    background: #e3e6ee;
+    border-radius: 12px;
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: #b6bedc #e3e6ee;
+}
+
 .recent-tasks ul { padding-left: 1.1rem; }
 .recent-tasks li { margin-bottom: 5px; }
 .font-main { font-family: 'Outfit', sans-serif; }

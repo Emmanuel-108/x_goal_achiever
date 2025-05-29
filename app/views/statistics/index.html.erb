@@ -1,145 +1,187 @@
-<h2 class="mb-4">📊 Performance Overview (Last 7 Days)</h2>
+<div id="vanta-bg-statistics" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+<script>
+let vantaStatistics;
+function destroyVantaStatistics() {
+  if (window.vantaStatistics && typeof window.vantaStatistics.destroy === "function") {
+    window.vantaStatistics.destroy();
+    window.vantaStatistics = null;
+  }
+}
+function initVantaStatistics() {
+  destroyVantaStatistics();
+  window.vantaStatistics = VANTA.CLOUDS({
+    el: "#vanta-bg-statistics",
+    mouseControls: true,
+    touchControls: true,
+    gyroControls: false,
+    minHeight: 200.00,
+    minWidth: 200.00,
+    highlightColor: 0x112D4E,
+    midtoneColor: 0xe6e6e6,
+    lowlightColor: 0xebebeb,
+    baseColor: 0xffffff
+  });
+}
+document.addEventListener("turbo:load", initVantaStatistics);
+document.addEventListener("DOMContentLoaded", initVantaStatistics);
+</script>
 
+<h2 class="mb-4">📊 Performance Overview (Last 7 Days)</h2>
 <canvas id="performanceChart" height="120"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
-
 <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const stats = <%= raw @chart_data.to_json %>;
+document.addEventListener("turbo:load", function() {
+  // 🔥 Destroy previous Chart.js instance to prevent tremblement!
+  if (window.performanceChartInstance) {
+    try { window.performanceChartInstance.destroy(); } catch(e) {}
+    window.performanceChartInstance = null;
+  }
 
-    const labels = stats.map(s => s.date);
-    const avgData = stats.map(s => s.avg);
-    const minData = stats.map(s => s.min);
-    const maxData = stats.map(s => s.max);
+  const canvas = document.getElementById('performanceChart');
+  if (!canvas) return;
 
-    const bestDay = stats.reduce((best, current) =>
-      current.avg > best.avg ? current : best, stats[0]
-    );
+  const stats = <%= raw @chart_data.to_json %>;
+  if (!stats || !stats.length) return;
 
-    const msg = document.createElement("p");
-    msg.innerHTML = `🌟 <strong style="color: #2e7d32;">Great job!</strong> Your best average performance was on <strong style="color: #1565c0;">${bestDay.date}</strong> with <strong style="color: #2e7d32;">${bestDay.avg}%</strong>! Keep it up!`;
-    msg.style.marginBottom = "1.5rem";
-    msg.style.fontSize = "1.1rem";
-    document.querySelector("h2").insertAdjacentElement("afterend", msg);
+  const labels = stats.map(s => s.date);
+  const avgData = stats.map(s => s.avg);
+  const minData = stats.map(s => s.min);
+  const maxData = stats.map(s => s.max);
 
-    const ctx = document.getElementById('performanceChart').getContext('2d');
+  const bestDay = stats.reduce((best, current) =>
+    current.avg > best.avg ? current : best, stats[0]
+  );
 
-    const gradientBar = ctx.createLinearGradient(0, 0, 0, 400);
-    gradientBar.addColorStop(0, 'rgba(100, 181, 246, 0.4)');
-    gradientBar.addColorStop(1, 'rgba(100, 181, 246, 0.05)');
+  let oldMsg = document.getElementById('best-day-msg');
+  if (oldMsg) oldMsg.remove();
+  const msg = document.createElement("p");
+  msg.id = "best-day-msg";
+  msg.innerHTML = `🌟 <strong style="color: #2e7d32;">Great job!</strong> Your best average performance was on <strong style="color: #1565c0;">${bestDay.date}</strong> with <strong style="color: #2e7d32;">${bestDay.avg}%</strong>! Keep it up!`;
+  msg.style.marginBottom = "1.5rem";
+  msg.style.fontSize = "1.1rem";
+  document.querySelector("h2").insertAdjacentElement("afterend", msg);
 
-    new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            type: 'bar',
-            label: 'Performance Range (Min/Max)',
-            data: stats.map(s => ({
-              x: s.date,
-              y: [s.min, s.max]
-            })),
-            backgroundColor: gradientBar,
-            borderColor: 'rgba(33, 150, 243, 0.4)',
-            borderWidth: 1.5,
-            borderRadius: 8,
-            barPercentage: 1.0,
-            categoryPercentage: 0.6,
-            parsing: { yAxisKey: 'y' }
-          },
-          {
-            type: 'line',
-            label: 'Average Performance',
-            data: avgData,
-            borderColor: 'rgba(25, 118, 210, 1)',
-            backgroundColor: 'rgba(25, 118, 210, 0.05)',
-            tension: 0.4,
-            pointRadius: 5,
-            pointHoverRadius: 6,
-            fill: {
-              target: 'origin',
-              above: 'rgba(25, 118, 210, 0.05)'
-            }
-          },
-          {
-            type: 'scatter',
-            label: 'Min Points',
-            data: minData.map((v, i) => ({ x: labels[i], y: v })),
-            backgroundColor: 'rgba(244, 67, 54, 0.8)',
-            pointRadius: 4,
-            pointStyle: 'triangle',
-            showLine: false
-          },
-          {
-            type: 'scatter',
-            label: 'Max Points',
-            data: maxData.map((v, i) => ({ x: labels[i], y: v })),
-            backgroundColor: 'rgba(76, 175, 80, 0.8)',
-            pointRadius: 4,
-            pointStyle: 'rectRot',
-            showLine: false
-          },
-          {
-            type: 'scatter',
-            label: '⭐ Best Day',
-            data: [{ x: bestDay.date, y: bestDay.avg }],
-            pointBackgroundColor: '#ffd700',
-            pointBorderColor: '#fbc02d',
-            pointBorderWidth: 2,
-            hoverBorderColor: '#ffeb3b',
-            pointRadius: 8,
-            pointStyle: 'star',
-            showLine: false
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: 'Performance per Day (Min / Max / Avg)',
-            font: { size: 18 }
-          },
-          tooltip: {
-            mode: 'index',
-            intersect: false
-          },
-          zoom: {
-            zoom: {
-              wheel: { enabled: true },
-              pinch: { enabled: true },
-              mode: 'x'
-            },
-            pan: {
-              enabled: true,
-              mode: 'x'
-            }
-          },
-          legend: {
-            position: 'top'
+  const ctx = document.getElementById('performanceChart').getContext('2d');
+  const gradientBar = ctx.createLinearGradient(0, 0, 0, 400);
+  gradientBar.addColorStop(0, 'rgba(100, 181, 246, 0.4)');
+  gradientBar.addColorStop(1, 'rgba(100, 181, 246, 0.05)');
+
+  window.performanceChartInstance = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          type: 'bar',
+          label: 'Performance Range (Min/Max)',
+          data: stats.map(s => ({
+            x: s.date,
+            y: [s.min, s.max]
+          })),
+          backgroundColor: gradientBar,
+          borderColor: 'rgba(33, 150, 243, 0.4)',
+          borderWidth: 1.5,
+          borderRadius: 8,
+          barPercentage: 1.0,
+          categoryPercentage: 0.6,
+          parsing: { yAxisKey: 'y' }
+        },
+        {
+          type: 'line',
+          label: 'Average Performance',
+          data: avgData,
+          borderColor: 'rgba(25, 118, 210, 1)',
+          backgroundColor: 'rgba(25, 118, 210, 0.05)',
+          tension: 0.4,
+          pointRadius: 5,
+          pointHoverRadius: 6,
+          fill: {
+            target: 'origin',
+            above: 'rgba(25, 118, 210, 0.05)'
           }
         },
-        scales: {
-          y: {
-            min: 0,
-            max: 100,
-            title: {
-              display: true,
-              text: 'Performance'
-            }
+        {
+          type: 'scatter',
+          label: 'Min Points',
+          data: minData.map((v, i) => ({ x: labels[i], y: v })),
+          backgroundColor: 'rgba(244, 67, 54, 0.8)',
+          pointRadius: 4,
+          pointStyle: 'triangle',
+          showLine: false
+        },
+        {
+          type: 'scatter',
+          label: 'Max Points',
+          data: maxData.map((v, i) => ({ x: labels[i], y: v })),
+          backgroundColor: 'rgba(76, 175, 80, 0.8)',
+          pointRadius: 4,
+          pointStyle: 'rectRot',
+          showLine: false
+        },
+        {
+          type: 'scatter',
+          label: '⭐ Best Day',
+          data: [{ x: bestDay.date, y: bestDay.avg }],
+          backgroundColor: '#ffd700',
+          borderColor: '#fbc02d',
+          borderWidth: 2,
+          pointRadius: 8,
+          pointStyle: 'star',
+          showLine: false
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        title: {
+          display: true,
+          text: 'Performance per Day (Min / Max / Avg)',
+          font: { size: 18 }
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false,
+          animation: { duration: 150 }
+        },
+        zoom: {
+          zoom: {
+            wheel: { enabled: true },
+            pinch: { enabled: true },
+            mode: 'x'
           },
-          x: {
-            title: {
-              display: true,
-              text: 'Date'
-            }
+          pan: {
+            enabled: true,
+            mode: 'x'
+          }
+        },
+        legend: {
+          position: 'top'
+        }
+      },
+      hover: { mode: "nearest", intersect: true, animationDuration: 80 },
+      animation: { duration: 300 },
+      scales: {
+        y: {
+          min: 0,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Performance'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Date'
           }
         }
       }
-    });
+    }
   });
+});
 </script>
