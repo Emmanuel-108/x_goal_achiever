@@ -146,17 +146,41 @@
           <div class="recent-tasks-inner">
             <ul class="task-list">
               <% @tasks.order(created_at: :desc).limit(10).each do |task| %>
-                <li id="<%= dom_id(task) %>" class="recent-task-item d-flex justify-content-between align-items-center">
+                <li id="<%= dom_id(task) %>" class="recent-task-item d-flex justify-content-between align-items-center position-relative">
                   <span><%= task.name %></span>
-                  <%= button_to task_path(task),
-                      method: :delete,
-                      data: { turbo_confirm: "Delete this task?" },
-                      class: "btn btn-sm btn-danger recent-task-delete-btn" do %>
-                    <i class="fa fa-trash"></i>
-                  <% end %>
+                  <div class="task-actions d-flex align-items-center gap-2">
+                    <!-- Bouton détails (ellipsis) -->
+                    <button class="btn btn-sm btn-light show-details-btn" type="button" data-bs-toggle="collapse" data-bs-target="#task-details-<%= task.id %>" aria-expanded="false" aria-controls="task-details-<%= task.id %>">
+                      <i class="fa fa-ellipsis-h"></i>
+                    </button>
+
+                    <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" },
+                        class: "btn btn-sm btn-danger recent-task-delete-btn" do %>
+                      <i class="fa fa-trash"></i>
+                    <% end %>
+                  </div>
+                </li>
+
+                <li id="task-details-<%= task.id %>" class="collapse task-details-box fade-in bg-light rounded p-3 mb-3">
+                  <ul class="list-unstyled small text-muted mb-0">
+                    <li><strong>Time:</strong> <%= task.time %> min</li>
+                    <% if task.description.present? %>
+                      <li><strong>Description:</strong> <%= task.description %></li>
+                    <% end %>
+                    <% if task.subtasks.any? %>
+                      <li><strong>Subtasks:</strong>
+                        <ul class="mb-0">
+                          <% task.subtasks.each do |sub| %>
+                            <li>- <%= sub.name %> (<%= sub.time %> min)</li>
+                          <% end %>
+                        </ul>
+                      </li>
+                    <% end %>
+                  </ul>
                 </li>
               <% end %>
             </ul>
+
 
           </div>
         </div>

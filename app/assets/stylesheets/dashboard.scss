@@ -67,32 +67,44 @@
   padding: 0;
   margin: 0;
 }
+.task-list {
+  .recent-task-item {
+    position: relative;
 
-.recent-task-item {
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #eee;
-  position: relative;
-  transition: background 0.2s;
+    .task-actions {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
 
-  &:last-child { border-bottom: none; }
+    &:hover .task-actions {
+      opacity: 1;
+    }
 
-  .recent-task-delete-btn {
-    opacity: 0.7;
-    font-size: 1rem;
-    margin-left: 1rem;
-    transition: opacity 0.2s;
-    padding: 2px 8px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
+    .show-details-btn {
+      background: none;
+      border: none;
+      padding: 4px;
+      font-size: 0.85rem;
+      color: #555;
+    }
 
-
-    opacity: 0;
-    pointer-events: none;
+    .fa-trash {
+      font-size: 0.85rem;
+    }
   }
 
-  &:hover .recent-task-delete-btn {
+  .task-details-box {
+    animation: fadeIn 0.4s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
     opacity: 1;
-    pointer-events: all;
+    transform: translateY(0);
   }
 }
