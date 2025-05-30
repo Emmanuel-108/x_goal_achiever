@@ -17,12 +17,12 @@
       <% end %>
 
       <div class="form-group">
-        <%= form.label :email, "Email Address", class:"form-text" %><br />
+        <%= form.label :email, "Email Address", class:"form-text" %>
         <%= form.email_field :email, autofocus: true, class: "form-control borderedform" %>
       </div>
 
       <div class="form-group">
-        <%= form.label :password, "Password", class:"form-text" %><br />
+        <%= form.label :password, "Password", class:"form-text" %>
         <%= form.password_field :password, autocomplete: "current-password", class: "form-control borderedform" %>
       </div>
 
@@ -31,7 +31,7 @@
       </div>
 
       <% if devise_mapping.rememberable? %>
-        <div class="form-group form-text">
+        <div class="remember-link">
           <label><%= form.check_box :remember_me %> Remember Me</label>
         </div>
       <% end %>
