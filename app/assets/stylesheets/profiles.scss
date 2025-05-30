@@ -30,6 +30,11 @@
   }
 }
 
+.form-text {
+  color: #112D4E;
+  font-weight: bold;
+}
+
 .form-control {
   width: 100%;
   padding: 15px;
@@ -38,34 +43,23 @@
   border-radius: 8px;
   color: black;
   font-size: 1.1rem;
+  margin-bottom: 2px;
 
   &:focus {
     background: #1f5088;
   }
 }
 
-.login-button {
-  width: 100%;
-  padding: 15px;
-  background-color: #5c7cfa;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-size: 1.2rem;
-  font-weight: bold;
-  transition: background-color 0.3s ease;
-  cursor: pointer;
-
-  &:hover {
-    background-color: #4c6ef5;
-  }
+.remember-link {
+  color: #112D4E;
+  font-size: medium;
 }
 
 .form-links {
   margin-top: 25px;
 
   a {
-    color: #5c7cfa;
+    color: #1f5088;
     text-decoration: none;
 
     &:hover {
@@ -75,31 +69,10 @@
 }
 
 .errors {
-  background-color: #ff6b6b;
+  background-color: #1f5088;
   color: white;
   padding: 10px;
   border-radius: 8px;
   margin-bottom: 20px;
-}
-
-.back-button {
-  position: fixed;
-  top: 80px;
-  left: 30px;
-  background-color: #e47200;
-  padding: 10px 20px;
-  border-radius: 8px;
-  color: white;
-  font-weight: bold;
-  text-decoration: none;
-  transition: background-color 0.3s ease;
-  z-index: 10;
-
-  &:hover {
-    background-color: #f67e04;
-  }
-}
-
-.form-text {
-  color: #5c7cfa;
+  text-align: left;
 }
