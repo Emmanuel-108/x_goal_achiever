@@ -143,42 +143,81 @@
         <div class="recent-tasks card">
           <h3 class="text-center mb-3">Recent Tasks</h3>
           <div class="recent-tasks-inner">
-            <ul class="task-list">
-              <% @tasks.order(created_at: :desc).limit(10).each do |task| %>
-                <li id="<%= dom_id(task) %>" class="recent-task-item d-flex justify-content-between align-items-center position-relative">
-                  <span><%= task.name %></span>
-                  <div class="task-actions d-flex align-items-center gap-2">
-                    <!-- Bouton détails (ellipsis) -->
-                    <button class="btn btn-sm btn-light show-details-btn" type="button" data-bs-toggle="collapse" data-bs-target="#task-details-<%= task.id %>" aria-expanded="false" aria-controls="task-details-<%= task.id %>">
-                      <i class="fa fa-ellipsis-h"></i>
-                    </button>
+           <ul class="task-list">
+            <% @tasks.order(created_at: :desc).limit(10).each do |task| %>
+              <li id="<%= dom_id(task) %>" class="recent-task-item d-flex justify-content-between align-items-center position-relative">
+                <span><%= task.name %></span>
+            <div class="task-actions">
+              <button class="button-or-xs" type="button" data-bs-toggle="collapse" data-bs-target="#task-details-<%= task.id %>" aria-expanded="false" aria-controls="task-details-<%= task.id %>">
+                <i class="fa fa-ellipsis-h"></i>
+              </button>
 
-                    <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" },
-                        class: "btn btn-sm btn-danger recent-task-delete-btn" do %>
-                      <i class="fa fa-trash"></i>
+              <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, class: "button-or-xs" do %>
+                <i class="fa fa-trash"></i>
+              <% end %>
+            </div>
+
+              </li>
+
+              <!-- Détails -->
+              <li id="task-details-<%= task.id %>" class="collapse task-details-box fade-in bg-light rounded p-3 mb-3">
+                <ul class="list-unstyled small text-muted mb-0">
+                  <li><strong>Time:</strong> <%= task.time %> min</li>
+                  <% if task.description.present? %>
+                    <li><strong>Description:</strong> <%= task.description %></li>
+                  <% end %>
+                  <% if task.subtasks.any? %>
+                    <li><strong>Subtasks:</strong>
+                      <ul class="mb-0">
+                        <% task.subtasks.each do |sub| %>
+                          <li>- <%= sub.name %> (<%= sub.time %> min)</li>
+                        <% end %>
+                      </ul>
+                    </li>
+                  <% end %>
+                </ul>
+
+                <div class="d-flex justify-content-end mt-2">
+                  <button type="button" class="button-or-xs" data-bs-toggle="modal" data-bs-target="#editTaskModal-<%= task.id %>">
+                    <i class="fa fa-pen"></i>
+                  </button>
+                </div>
+              </li>
+
+              <!-- Modale édition -->
+              <div class="modal fade" id="editTaskModal-<%= task.id %>" tabindex="-1" aria-labelledby="editTaskModalLabel-<%= task.id %>" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <%= form_with(model: task, url: task_path(task), method: :patch, local: true) do |f| %>
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="editTaskModalLabel-<%= task.id %>">Update Task</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <div class="mb-3">
+                          <%= f.label :name, "Task Name", class: "form-label" %>
+                          <%= f.text_field :name, class: "form-control" %>
+                        </div>
+                        <div class="mb-3">
+                          <%= f.label :time, "Time (min)", class: "form-label" %>
+                          <%= f.number_field :time, class: "form-control", min: 1 %>
+                        </div>
+                        <div class="mb-3">
+                          <%= f.label :description, "Description", class: "form-label" %>
+                          <%= f.text_area :description, rows: 3, class: "form-control" %>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <%= f.submit "Update Task", class: "btn btn-success" %>
+                      </div>
                     <% end %>
                   </div>
-                </li>
+                </div>
+              </div>
+            <% end %>
+          </ul>
 
-                <li id="task-details-<%= task.id %>" class="collapse task-details-box fade-in bg-light rounded p-3 mb-3">
-                  <ul class="list-unstyled small text-muted mb-0">
-                    <li><strong>Time:</strong> <%= task.time %> min</li>
-                    <% if task.description.present? %>
-                      <li><strong>Description:</strong> <%= task.description %></li>
-                    <% end %>
-                    <% if task.subtasks.any? %>
-                      <li><strong>Subtasks:</strong>
-                        <ul class="mb-0">
-                          <% task.subtasks.each do |sub| %>
-                            <li>- <%= sub.name %> (<%= sub.time %> min)</li>
-                          <% end %>
-                        </ul>
-                      </li>
-                    <% end %>
-                  </ul>
-                </li>
-              <% end %>
-            </ul>
 
 
           </div>
