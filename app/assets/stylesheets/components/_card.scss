@@ -1,4 +1,4 @@
-// TEST 1
+
 .card {
   position: relative;
   background: #dbe2ef;
@@ -7,7 +7,7 @@
   z-index: 0;
   border-radius: 15px;
 
-  // If your form fills the card, padding should go *inside* the form
+
   padding: 0;
 
   > * {
@@ -26,8 +26,8 @@
     .btn,
     button {
       position: relative;
-      z-index: 3; // must be above the pseudo elements
-      background-color: white; // or semi-transparent
+      z-index: 3;
+      background-color: white;
       border-radius: 0.5rem;
     }
   }
@@ -36,8 +36,8 @@
   &::after {
     content: "";
     position: absolute;
-    width: 10%;
-    height: 10%;
+    width: 1%;
+    height: 1%;
     background-color: rgb(245, 250, 252);
     transition: all 0.5s ease;
     z-index: 1;
@@ -80,7 +80,7 @@
 
 .cardform:hover {
   transform: scale(1.03);
-  background: rgb(245, 250, 252); // or a lightened hover color
+  background: rgb(245, 250, 252);
 }
 
 .cardform:active {
