@@ -1,35 +1,29 @@
-.btn {
-  background-color: #112D4E;
-  color: white;
-  padding: 8px 16px;
-  border: none;
+.button-or {
+  margin: 10px;
+  padding: 8px 15px;
   text-align: center;
-  transition-duration: 0.4s;
-  text-decoration: none;
-  overflow: hidden;
-
-  &:hover{
-    background-color: #1f5088;
-    scale: 1.075;
-    color: white;
-  }
-}
-
-.btncharts {
-  background-color: #112D4E;
+  text-transform: uppercase;
+  transition: 0.5s;
+  background-size: 200% auto;
   color: white;
-  padding: 8px 16px;
-  border: none;
-  text-align: center;
-  text-decoration: none;
+  border-radius: 10px;
+  display: block;
+  border: 0px;
+  font-weight: 500;
+  box-shadow: 0px 0px 14px -7px #f09819;
+  background-image: linear-gradient(45deg, #112D4E 0%, #274b74  51%, #112D4E  100%);
   cursor: pointer;
-  transition: 0.4s;
-  margin-top: 50px;
-  align-self: flex-end;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
 }
 
-.btncharts:hover {
-  background-color: #1f5088;
-  transform: scale(1.075);
-  color: white;
+.button-or:hover {
+  background-position: right center;
+  color: #fff;
+  text-decoration: none;
+}
+
+.button-or:active {
+  transform: scale(0.95);
 }

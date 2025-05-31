@@ -7,26 +7,25 @@
 <!-- VANTA + THREE.js -->
 <div id="vanta-background" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
 <script>
-  // BG Vanta Clouds
   function loadVantaBG() {
     if (window.vantaBG && typeof window.vantaBG.destroy === "function") {
       window.vantaBG.destroy();
       window.vantaBG = null;
     }
-    window.vantaBG = VANTA.CLOUDS({
+    window.vantaBG = VANTA.FOG({
       el: "#vanta-background",
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      highlightColor: 0x5f68c3, // bleu-mauve
-      midtoneColor: 0xa18cd1,   // mauve
-      lowlightColor: 0x4fc3f7,  // bleu clair
-      baseColor: 0xffffff
-    });
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            highlightColor: 0x112D4E,
+            midtoneColor: 0xe6e6e6,
+            lowlightColor: 0xebebeb,
+            baseColor: 0xffffff
+          });
   }
   document.addEventListener("turbo:load", loadVantaBG);
   document.addEventListener("DOMContentLoaded", loadVantaBG);
@@ -44,20 +43,20 @@
     <div class="top-section d-flex flex-wrap">
 
       <!-- Statistics Panel -->
-      <div class="statistics-card dashboard-card me-4 flex-grow-1 ">
+      <div class="statistics-card card me-4 flex-grow-1 ">
         <div class="statistics-box">
           <h2 class="text-center">Statistics</h2>
           <div class="graph-placeholder" style="max-width:660px; margin:auto; width: 600px; height: 400px;">
             <canvas id="statsChart" width="600" height="400" style="width: 600px; height: 400px;"></canvas>
           </div>
-          <%= link_to "📊 Advanced statistics", statistics_path, class: "btn btn-outline-primary mt-4 d-block mx-auto" %>
+          <%= link_to "📊 Advanced statistics", statistics_path, class: "button-or mt-4 d-block mx-auto" %>
         </div>
       </div>
 
       <!-- Right Column -->
       <div class="right-column d-flex flex-column" data-controller="task-modal">
         <!-- New Task Panel -->
-        <div class="task-form">
+        <div class="cardform">
           <h2 class="text-center mb-3">New task</h2>
           <form action="<%= tasks_path %>" method="post" autocomplete="off">
             <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
@@ -69,12 +68,12 @@
               <label for="quick-task-time" class="form-label me-2 mb-0">Time (min):</label>
               <input type="number" id="quick-task-time" name="task[time]" class="form-control" style="width: 90px;" min="1" placeholder="25" required>
             </div>
-            <div class="d-flex">
-              <button type="submit" class="btn btn-outline-primary w-100">
+            <div class="d-flex justify-content-center">
+              <button type="submit" class="button-or">
                 <i class="fa fa-plus me-2"></i>Create task
               </button>
               <!-- Modal button -->
-              <button type="button" class="btn btn-more" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
+              <button type="button" class="button-or ml-3" data-bs-toggle="modal" data-bs-target="#exampleModalCenter">
                 <i class="fa fa-ellipsis-h"></i>
               </button>
             </div>
@@ -141,7 +140,7 @@
           <% end %>
         </div>
         <!-- Recent Tasks Panel -->
-        <div class="recent-tasks dashboard-card">
+        <div class="recent-tasks card">
           <h3 class="text-center mb-3">Recent Tasks</h3>
           <div class="recent-tasks-inner">
             <ul class="task-list">

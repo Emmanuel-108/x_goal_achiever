@@ -1,6 +1,6 @@
 <div id="vanta-bg-statistics" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.clouds.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
 <script>
 let vantaStatistics;
 function destroyVantaStatistics() {
@@ -11,18 +11,18 @@ function destroyVantaStatistics() {
 }
 function initVantaStatistics() {
   destroyVantaStatistics();
-  window.vantaStatistics = VANTA.CLOUDS({
-    el: "#vanta-bg-statistics",
-    mouseControls: true,
-    touchControls: true,
-    gyroControls: false,
-    minHeight: 200.00,
-    minWidth: 200.00,
-    highlightColor: 0x112D4E,
-    midtoneColor: 0xe6e6e6,
-    lowlightColor: 0xebebeb,
-    baseColor: 0xffffff
-  });
+  window.vantaStatistics = VANTA.FOG({
+    el: "#vanta-background",
+            mouseControls: true,
+            touchControls: true,
+            gyroControls: false,
+            minHeight: 200.00,
+            minWidth: 200.00,
+            highlightColor: 0x112D4E,
+            midtoneColor: 0xe6e6e6,
+            lowlightColor: 0xebebeb,
+            baseColor: 0xffffff
+          });
 }
 document.addEventListener("turbo:load", initVantaStatistics);
 document.addEventListener("DOMContentLoaded", initVantaStatistics);

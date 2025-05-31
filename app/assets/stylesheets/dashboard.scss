@@ -2,9 +2,9 @@
 
 .dashboard-page { min-height: 100vh; padding-top: 24px; }
 .statistics-card, .task-form, .recent-tasks {
-  background: #dbe2ef; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,0,0,0.09);
+  background: #dbe2ef; border-radius: 18px; box-shadow: 0 4px 18px rgba(0,0,0,0.09); border: 2px solid #fff;
 }
-.statistics-card { padding: 24px 20px; }
+.statistics-card { padding: 24px 20px; border: 2px solid #fff;}
 .right-column { min-width: 340px; max-width: 410px; }
 .task-form { padding: 22px; }
 .task-form .form-label { font-weight: 600; }
