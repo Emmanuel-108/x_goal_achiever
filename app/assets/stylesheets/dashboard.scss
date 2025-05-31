@@ -20,7 +20,7 @@
 .recent-tasks {
   padding: 20px;
   position: relative;
-  overflow: visible; 
+  overflow: visible;
   max-height: none;
 }
 
@@ -28,7 +28,7 @@
   max-height: 210px;
   overflow-y: auto;
   overflow-x: hidden;
-  border-radius: 12px; 
+  border-radius: 12px;
   background: transparent;
 
   // Scrollbar styles
@@ -158,7 +158,6 @@
 
 body.modal-open {
   overflow: hidden !important;
-=======
 
 .custom-modal {
   max-width: 600px;
@@ -168,4 +167,6 @@ body.modal-open {
   border-radius: 20px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
   border: none;
+}
+
 }
