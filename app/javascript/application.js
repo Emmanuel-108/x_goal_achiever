@@ -5,13 +5,7 @@ import "@popperjs/core"
 import "bootstrap"
 
 // contact page
-import "./contact_map"
-
-// task modal
-// import "./task_modal"
+import "contact_map"
 
 // Index - Stats Graph
-import "./statistics_graph_index"
-
-// timer
-import "./controllers/task_form_submit_controller";
+import "statistics_graph_index"

@@ -61,3 +61,50 @@
 .footer-content a:hover { color: #3B82F6; }
 .task-form .btn-more { margin-left: 10px; background: #EEE; border: none; color: #444; border-radius: 12px; padding: 0.5em 1.2em; transition: background 0.15s; }
 .task-form .btn-more:hover { background: #DDD; color: #3B82F6; }
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.task-list {
+  .recent-task-item {
+    position: relative;
+
+    .task-actions {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover .task-actions {
+      opacity: 1;
+    }
+
+    .show-details-btn {
+      background: none;
+      border: none;
+      padding: 4px;
+      font-size: 0.85rem;
+      color: #555;
+    }
+
+    .fa-trash {
+      font-size: 0.85rem;
+    }
+  }
+
+  .task-details-box {
+    animation: fadeIn 0.4s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -10,3 +10,5 @@ pin "@popperjs/core", to: "popper.js", preload: true
 
 pin "@kurkle/color", to: "@kurkle--color.js" # @0.3.4
 pin "chart.js", to: "https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"
+pin "contact_map", to: "contact_map.js"
+pin "statistics_graph_index", to: "statistics_graph_index.js"
