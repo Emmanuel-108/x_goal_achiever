@@ -7,8 +7,5 @@ import "bootstrap"
 // contact page
 import "contact_map"
 
-// task modal
-// import "./task_modal"
-
 // Index - Stats Graph
 import "statistics_graph_index"
