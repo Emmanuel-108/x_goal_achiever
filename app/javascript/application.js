@@ -5,7 +5,7 @@ import "@popperjs/core"
 import "bootstrap"
 
 // contact page
-import "./contact_map"
+import "contact_map"
 
 // task modal
 // import "./task_modal"
@@ -14,4 +14,4 @@ import "./contact_map"
 import "./statistics_graph_index"
 
 // timer
-import "./controllers/task_form_submit_controller";
+// import "./controllers/task_form_submit_controller";
