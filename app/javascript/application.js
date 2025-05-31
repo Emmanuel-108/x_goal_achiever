@@ -11,7 +11,4 @@ import "contact_map"
 // import "./task_modal"
 
 // Index - Stats Graph
-import "./statistics_graph_index"
-
-// timer
-// import "./controllers/task_form_submit_controller";
+import "statistics_graph_index"
