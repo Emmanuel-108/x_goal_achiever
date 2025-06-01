@@ -1,3 +1,4 @@
+<!-- Focus Panel Main -->
 <div class="focus-bg d-flex justify-content-center align-items-center">
   <div class="focus-box position-relative">
     <!-- Bouton X rond custom -->
@@ -6,7 +7,7 @@
     </button>
 
     <div class="focus-header d-flex justify-content-between align-items-center mb-4">
-      <h5 class="mb-0">Focus panel</h5>
+      <h5 class="mb-0">Focus Panel</h5>
       <a href="https://open.spotify.com" target="_blank" class="btn-spotify d-flex align-items-center">
         <i class="fab fa-spotify mr-2"></i> Spotify
       </a>
@@ -24,7 +25,7 @@
         <%= hidden_field_tag :input_id, @task.id %>
         <%= hidden_field_tag :start_time, Time.current %>
         <%= hidden_field_tag :duration, focus_minutes(@task) %>
-        <%# <button type="submit" id="finish-btn" class="btn btn-success mt-4 d-none">Enregistrer la session</button> %>
+        <button type="submit" id="finish-btn" class="btn button-or mt-4 d-none">Register Stats</button>
       </form>
     </div>
   </div>
@@ -35,11 +36,10 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content text-center">
       <div class="modal-header">
-        <h5 class="modal-title" id="endTaskModalLabel">🎉 Tâche terminée !</h5>
+        <h5 class="modal-title" id="endTaskModalLabel">🎉 Task Completed!</h5>
       </div>
       <div class="modal-body">
-        <p>Bravo, tu as terminé la tâche "<%= @task.name %>" !</p>
-        <button class="btn btn-primary" onclick="window.location.href='/tasks'">Retour aux tâches</button>
+        <p>Well done! You have completed "<%= @task.name %>"!</p>
       </div>
     </div>
   </div>
@@ -51,23 +51,27 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content text-center">
         <div class="modal-header">
-          <h5 class="modal-title" id="subtaskModalLabel<%= index %>">⏱️ Sous-tâche terminée</h5>
+          <h5 class="modal-title" id="subtaskModalLabel<%= index %>">⏱️ Time to finish the current subtask.</h5>
         </div>
         <div class="modal-body">
-          <p>Tu as terminé : "<%= subtask.name %>"</p>
+          <p>You have completed: "<%= subtask.name %>"</p>
         </div>
       </div>
     </div>
   </div>
 <% end %>
 
+<audio id="notification-sound" src="<%= asset_path('end_timer.ogg') %>" preload="auto"></audio>
+
 <script>
   function startFocusTimer() {
     let duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
     const display = document.getElementById('focus-timer');
     const finishBtn = document.getElementById('finish-btn');
+    const form = document.getElementById("focus-form");
     let timerId = null;
     let elapsed = 0;
+    const sound = document.getElementById("notification-sound");
 
     // Set timers for each subtask
     if (typeof subtasks !== "undefined") {
@@ -77,6 +81,10 @@
         cumulative += subtask.time * 60;
 
         setTimeout(() => {
+          // Skip sound if it's the last subtask
+          if (index < subtasks.length - 1) {
+            sound.play();
+          }
           const popup = new bootstrap.Modal(document.getElementById(`subtaskModal${index}`));
           popup.show();
         }, cumulative * 1000);
@@ -94,6 +102,7 @@
         timerId = setTimeout(updateTimer, 1000);
       } else {
         finishBtn.classList.remove("d-none");
+        sound.play();
         let endModal = new bootstrap.Modal(document.getElementById('endTaskModal'));
         endModal.show();
       }
@@ -101,6 +110,14 @@
 
     if (window.focusPanelTimerId) clearTimeout(window.focusPanelTimerId);
     window.focusPanelTimerId = setTimeout(updateTimer, 0);
+
+    // Send Stats
+    // finishBtn.addEventListener("click", () => {
+    //   form.submit();
+    //   setTimeout(() => {
+    //     window.location.href = "/tasks";
+    //   }, 500);
+    // });
   }
 
   document.addEventListener("turbo:load", startFocusTimer);

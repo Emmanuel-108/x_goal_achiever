@@ -156,7 +156,28 @@ export default class extends Controller {
       case "random":
         let randoms = Array.from({ length: count }, () => Math.random());
         let sum = randoms.reduce((a, b) => a + b, 0);
-        times = randoms.map(r => Math.round((r / sum) * totalTime));
+        let rawTimes = randoms.map(r => Math.round((r / sum) * totalTime));
+
+        // Floor to avoid overflow
+        times = rawTimes.map(Math.floor);
+
+        // Distribute leftover time
+        let shortfall = totalTime - times.reduce((a, b) => a + b, 0);
+        while (shortfall > 0) {
+          // Find the index of the subtask with the smallest time
+          const minTime = Math.min(...times);
+          const minIndices = times
+            .map((time, index) => (time === minTime ? index : -1))
+            .filter(index => index !== -1);
+
+          // Pick one of the min indices (if multiple) randomly or just take the first
+          const i = minIndices.length > 1
+            ? minIndices[Math.floor(Math.random() * minIndices.length)]
+            : minIndices[0];
+
+          times[i]++;
+          shortfall--;
+        }
         break;
       default:
         times = Array(count).fill(0);
