@@ -16,7 +16,9 @@ class TasksController < ApplicationController
   end
 
   def create
-    @task = current_user.tasks.new(task_params)
+    @task = current_user.tasks.new
+    @task.assign_attributes(task_params)
+    @task.distribution = params[:distribution]
     @task.distribute_time!(@task.time.to_i, @task.distribution) if @task.time.present? && @task.distribution.present?
 
     if @task.save
@@ -53,8 +55,6 @@ class TasksController < ApplicationController
       end
     end
   end
-
-
 
   private
 
