@@ -14,18 +14,39 @@
     </div>
     <div class="focus-content text-center">
       <h2 class="mb-4"><%= @task.name %></h2>
-      <%# Added line %>
       <script>
         const subtasks = <%= raw(@task.subtasks.order(:id).pluck(:name, :time).map { |name, time| { name: name, time: time } }.to_json) %>;
       </script>
       <div class="timer-display" id="focus-timer">00:00:00</div>
       <form method="post" action="<%= statistics_path %>" id="focus-form">
         <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+        <!-- Required Fields -->
+        <%= hidden_field_tag :user_id, current_user.id %>
         <%= hidden_field_tag :input_type, "Task" %>
         <%= hidden_field_tag :input_id, @task.id %>
-        <%= hidden_field_tag :start_time, Time.current %>
+
+        <!-- Start/End Time -->
+        <%= hidden_field_tag :start_time, @task.created_at %>
+        <%= hidden_field_tag :end_time, "" %> <!-- will be filled by JS -->
+
+        <!-- Statistic Inputs -->
+        <%= hidden_field_tag :input_status, "Completed" %>
+        <%= hidden_field_tag :input_rating, 5 %> <!-- static for now -->
+        <%= hidden_field_tag :input_performance, "PLACEHOLDER_PERFORMANCE" %> <!-- JS will calculate -->
+
+        <!-- Duration (used by timer JS only) -->
         <%= hidden_field_tag :duration, focus_minutes(@task) %>
-        <button type="submit" id="finish-btn" class="btn button-or mt-4 d-none">Register Stats</button>
+
+        <!-- Subtasks handling -->
+        <% @task.subtasks.order(:id).each_with_index do |subtask, index| %>
+          <%= hidden_field_tag "subtask_stats[][input_type]", "Subtask" %>
+          <%= hidden_field_tag "subtask_stats[][input_id]", subtask.id %>
+          <%= hidden_field_tag "subtask_stats[][start_time]", subtask.created_at %>
+          <%= hidden_field_tag "subtask_stats[][end_time]", "" %> <!-- Will be filled by JS -->
+        <% end %>
+
+        <button type="submit" id="finish-btn" class="btn button-or mt-4 d-none" onclick="finalizeStatistic(); document.getElementById('focus-form').submit();">Register Stats</button>
+        <%# <button class="focus-close-btn" onclick="finalizeStatistic(); document.getElementById('focus-form').submit();" aria-label="Fermer"> %>
       </form>
     </div>
   </div>
@@ -91,6 +112,19 @@
       });
     }
 
+    function finalizeStatistic() {
+      const endTimeInput = document.querySelector('input[name="end_time"]');
+      const performanceInput = document.querySelector('input[name="input_performance"]');
+
+      const now = new Date().toISOString();
+      endTimeInput.value = now;
+
+      const placeholderPerformance = 87; // To be replaced by the actual calculation.
+      performanceInput.value = placeholderPerformance;
+
+      document.querySelectorAll('input[name="subtask_stats[][end_time]"]').forEach(input => input.value = now);
+    }
+
     function updateTimer() {
       let h = Math.floor(duration / 3600);
       let m = Math.floor((duration % 3600) / 60);
@@ -101,6 +135,7 @@
         elapsed++;
         timerId = setTimeout(updateTimer, 1000);
       } else {
+        finalizeStatistic();
         finishBtn.classList.remove("d-none");
         sound.play();
         let endModal = new bootstrap.Modal(document.getElementById('endTaskModal'));
