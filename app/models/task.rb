@@ -34,7 +34,18 @@ class Task < ApplicationRecord
       when "random"
         randoms = Array.new(count) { rand }
         sum = randoms.sum
-        randoms.map { |r| (r / sum * total_time).round }
+        raw_times = randoms.map { |r| (r / sum * total_time).round }
+
+        # Round down first to avoid over-allocating
+        times = raw_times.map(&:floor)
+        shortfall = total_time - times.sum
+
+        # Distribute the leftover minutes to the subtasks with the least time
+        shortfall.times do
+          min_index = times.each_index.min_by { |i| times[i] }
+          times[min_index] += 1
+        end
+        times
       else
         Array.new(count, 0)
       end
@@ -45,10 +56,8 @@ class Task < ApplicationRecord
     subtasks.each_with_index do |subtask, index|
       # subtask.time = times[index].minutes.from_now
       # subtask.time = (Time.current + times[index].minutes).strftime("%H:%M:%S")
-      minutes = times[index]
+      subtask.time = times[index]
       # subtask.time = "%02d:%02d:00" % [minutes / 60, minutes % 60]
-      subtask.time = minutes
-      subtask.save
     end
   end
 end

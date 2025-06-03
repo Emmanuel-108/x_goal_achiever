@@ -108,3 +108,65 @@
     transform: translateY(0);
   }
 }
+// too delete to the bottom
+.task-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.button-or-xs {
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #112D4E;
+  color: white;
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  height: 28px;
+
+  i {
+    font-size: 0.7rem;
+    color: white;
+  }
+
+  &:hover {
+    background-color: #274b74;
+    color: white;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.modal {
+  z-index: 1055;
+}
+
+.modal-backdrop {
+  z-index: 1050;
+}
+
+.modal-open .modal {
+  overflow-y: auto;
+}
+
+body.modal-open {
+  overflow: hidden !important;
+
+.custom-modal {
+  max-width: 600px;
+}
+
+.modal-content {
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: none;
+}
+
+}

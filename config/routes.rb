@@ -22,7 +22,7 @@ Rails.application.routes.draw do
     resources :statistics, only: [:index, :new, :create, :edit, :update ]
   end
 
-  resources :statistics, only: [:index]
+  resources :statistics, only: [:index, :new, :create]
 
   resources :contacts, only: [:index, :new, :create]
 end
