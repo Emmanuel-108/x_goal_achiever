@@ -41,7 +41,7 @@ class StatisticsController < ApplicationController
     end
 
     unless @task
-      redirect_to tasks_path, alert: "La tâche est introuvable."
+      redirect_to tasks_path, alert: "The task was not found."
       return
     end
   end
@@ -55,7 +55,7 @@ class StatisticsController < ApplicationController
     end
 
     unless @task
-      redirect_to tasks_path, alert: "La tâche n'a pas été trouvée"
+      redirect_to tasks_path, alert: "The task was not found."
       return
     end
 
@@ -64,37 +64,44 @@ class StatisticsController < ApplicationController
       user: current_user,
       input_type: params[:input_type],
       start_time: params[:start_time],
-      end_time: Time.current,
+      end_time: params[:end_time],
       input_status: params[:input_status],
       input_rating: params[:input_rating],
       input_performance: params[:input_performance]
     )
 
     if @statistic.save
-      # Optionnel : aussi créer une stat pour chaque subtask
-      @task.subtasks.each do |subtask|
-        subtask.statistics.create(
-          user: current_user,
-          input_type: 'Subtask',
-          start_time: params[:start_time],
-          end_time: Time.current
-        )
+      # Create statistics for each subtask (if provided)
+      if params[:subtask_stats].present?
+        params[:subtask_stats].each do |subtask_stat|
+          # Skip if required fields are missing
+          next if subtask_stat[:input_id].blank? || subtask_stat[:start_time].blank? || subtask_stat[:end_time].blank?
+
+          Statistic.create(
+            user: current_user,
+            input_type: 'Subtask',
+            input_id: subtask_stat[:input_id],
+            start_time: subtask_stat[:start_time],
+            end_time: subtask_stat[:end_time]
+          )
+        end
       end
-      redirect_to tasks_path, notice: "Session focus enregistrée!"
+
+      redirect_to tasks_path, notice: "Registered focus session!"
     else
       render :new, status: :unprocessable_entity
     end
   end
 
-  def edit
-    @statistic = Statistic.find(params[:id])
-  end
+  # def edit
+  #   @statistic = Statistic.find(params[:id])
+  # end
 
-  def update
-    @statistic = Statistic.find(params[:id])
-    @statistic.update(statistic_params)
-    redirect_to tasks_path
-  end
+  # def update
+  #   @statistic = Statistic.find(params[:id])
+  #   @statistic.update(statistic_params)
+  #   redirect_to tasks_path
+  # end
 
   private
 
