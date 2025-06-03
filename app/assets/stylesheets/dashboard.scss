@@ -20,7 +20,7 @@
 .recent-tasks {
   padding: 20px;
   position: relative;
-  overflow: visible; // on enlève overflow auto ici !
+  overflow: visible;
   max-height: none;
 }
 
@@ -28,7 +28,7 @@
   max-height: 210px;
   overflow-y: auto;
   overflow-x: hidden;
-  border-radius: 12px; // coupe bien la scrollbar
+  border-radius: 12px;
   background: transparent;
 
   // Scrollbar styles
