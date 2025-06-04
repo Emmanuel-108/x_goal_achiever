@@ -169,4 +169,43 @@ body.modal-open {
   border: none;
 }
 
+}.modal-backdrop {
+  background-color: transparent !important;
+}
+
+.modal {
+  background-color: #FFFFFF;
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-dialog {
+  max-width: 600px;
+  margin: 2rem auto;
+}
+
+.modal-content.bg-cloud {
+  background: linear-gradient(to bottom right, #f0f4ff, #e0e7ff);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+.modal-backdrop {
+  background-color: transparent !important;
+  z-index: 0 !important;
+}
+
+.modal {
+  z-index: 1055 !important;
+}
+
+.modal-content {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 1056;
+}
+
+.modal-backdrop.show {
+  opacity: 0 !important;
 }

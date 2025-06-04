@@ -139,23 +139,26 @@
           <% end %>
         </div>
         <!-- Recent Tasks Panel -->
-        <div class="recent-tasks card">
-          <h3 class="text-center mb-3">Recent Tasks</h3>
-          <div class="recent-tasks-inner">
-           <ul class="task-list">
+
+      <div class="recent-tasks card">
+        <h3 class="text-center mb-3">Recent Tasks</h3>
+        <div class="recent-tasks-inner">
+          <ul class="task-list">
             <% @tasks.order(created_at: :desc).limit(10).each do |task| %>
-              <li id="<%= dom_id(task) %>" class="recent-task-item d-flex justify-content-between align-items-center position-relative">
+              <!-- Tâche principale -->
+              <li id="task-<%= task.id %>" class="recent-task-item d-flex justify-content-between align-items-center position-relative">
                 <span><%= task.name %></span>
-            <div class="task-actions">
-              <button class="button-or-xs" type="button" data-bs-toggle="collapse" data-bs-target="#task-details-<%= task.id %>" aria-expanded="false" aria-controls="task-details-<%= task.id %>">
-                <i class="fa fa-ellipsis-h"></i>
-              </button>
+                <div class="task-actions">
+                  <!-- Détails -->
+                  <button class="button-or-xs" type="button" data-bs-toggle="collapse" data-bs-target="#task-details-<%= task.id %>">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </button>
 
-              <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, class: "button-or-xs" do %>
-                <i class="fa fa-trash"></i>
-              <% end %>
-            </div>
-
+                  <!-- Delete -->
+                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, class: "button-or-xs" do %>
+                    <i class="fa fa-trash"></i>
+                  <% end %>
+                </div>
               </li>
 
               <!-- Détails -->
@@ -176,39 +179,40 @@
                   <% end %>
                 </ul>
 
+                <!-- Show pencil -->
                 <div class="d-flex justify-content-end mt-2">
-                  <button type="button" class="button-or-xs" data-bs-toggle="modal" data-bs-target="#editTaskModal-<%= task.id %>">
+                  <button type="button" class="button-or-xs" data-bs-toggle="modal" data-bs-target="#inlineEditModal-<%= task.id %>">
                     <i class="fa fa-pen"></i>
                   </button>
                 </div>
               </li>
 
-              <!-- Modale édition -->
-              <div class="modal fade" id="editTaskModal-<%= task.id %>" tabindex="-1" aria-labelledby="editTaskModalLabel-<%= task.id %>" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content">
-                    <%= form_with(model: task, url: task_path(task), method: :patch, local: true) do |f| %>
+              <!-- MODALE -->
+              <div class="modal fade" id="inlineEditModal-<%= task.id %>" tabindex="-1" aria-labelledby="inlineEditModalLabel-<%= task.id %>" aria-hidden="true" data-bs-backdrop="false">
+                <div class="modal-dialog modal-dialog-centered custom-modal">
+                  <div class="modal-content bg-cloud">
+                    <%= form_with(model: task, url: task_path(task), method: :patch, data: { turbo: false }, html: { onsubmit: "redirectToDashboard(event)" }) do |f| %>
                       <div class="modal-header">
-                        <h5 class="modal-title" id="editTaskModalLabel-<%= task.id %>">Update Task</h5>
+                        <h5 class="modal-title" id="inlineEditModalLabel-<%= task.id %>">Update Task</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
                         <div class="mb-3">
                           <%= f.label :name, "Task Name", class: "form-label" %>
-                          <%= f.text_field :name, class: "form-control" %>
+                          <%= f.text_field :name, class: "form-control", required: true %>
                         </div>
                         <div class="mb-3">
                           <%= f.label :time, "Time (min)", class: "form-label" %>
-                          <%= f.number_field :time, class: "form-control", min: 1 %>
+                          <%= f.number_field :time, class: "form-control", min: 1, required: true %>
                         </div>
                         <div class="mb-3">
                           <%= f.label :description, "Description", class: "form-label" %>
-                          <%= f.text_area :description, rows: 3, class: "form-control" %>
+                          <%= f.text_area :description, rows: 2, class: "form-control" %>
                         </div>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <%= f.submit "Update Task", class: "btn btn-success" %>
+                        <button type="button" class="btn" data-bs-dismiss="modal" style="background-color:#274b74;color:white;">Cancel</button>
+                        <%= f.submit "💾 Save", class: "btn", style: "background-color:#274b74;color:white;" %>
                       </div>
                     <% end %>
                   </div>
@@ -216,11 +220,9 @@
               </div>
             <% end %>
           </ul>
-
-
-
-          </div>
         </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -308,4 +310,30 @@ function loadStatsChart() {
 }
 document.addEventListener("turbo:load", loadStatsChart);
 document.addEventListener("DOMContentLoaded", loadStatsChart);
+</script>
+
+
+<script>
+function redirectToDashboard(e) {
+  e.preventDefault();
+  const form = e.target;
+  const formData = new FormData(form);
+
+  fetch(form.action, {
+    method: form.method.toUpperCase(),
+    body: formData
+  }).then(response => {
+    if (response.ok) {
+      const modal = bootstrap.Modal.getInstance(form.closest('.modal'));
+      if (modal) modal.hide();
+      window.location.href = "/tasks";
+    } else {
+      alert("Une erreur est survenue pendant la sauvegarde.");
+    }
+  }).catch(() => {
+    alert("Échec de la requête. Vérifie ta connexion.");
+  });
+
+}
+
 </script>
