@@ -2,7 +2,7 @@
 <div class="focus-bg d-flex justify-content-center align-items-center">
   <div class="focus-box position-relative">
     <!-- Bouton X rond custom -->
-    <button class="focus-close-btn" onclick="window.location.href='/tasks'" aria-label="Fermer">
+    <button class="focus-close-btn" id="trigger-exit" aria-label="Fermer">
       <span aria-hidden="true">&times;</span>
     </button>
 
@@ -44,8 +44,8 @@
           <%= hidden_field_tag "subtask_stats[][start_time]", subtask.created_at %>
           <%= hidden_field_tag "subtask_stats[][end_time]", "" %> <!-- Will be filled by JS -->
         <% end %>
-
-        <button type="submit" id="finish-btn" class="btn button-or mt-4 d-none" onclick="finalizeStatistic(); document.getElementById('focus-form').submit();">Register Stats</button>
+        <button type="button" id="finish-btn" class="btn button-or mt-4 d-none">Register Stats</button>
+        <%# <button type="submit" id="finish-btn" class="btn button-or mt-4 d-none" onclick="finalizeStatistic(); document.getElementById('focus-form').submit();">Register Stats</button> %>
         <%# <button class="focus-close-btn" onclick="finalizeStatistic(); document.getElementById('focus-form').submit();" aria-label="Fermer"> %>
       </form>
     </div>
@@ -82,6 +82,35 @@
   </div>
 <% end %>
 
+<!-- Rating + Status Modal -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header">
+        <h5 class="modal-title" id="feedbackModalLabel">How did it go?</h5>
+      </div>
+      <div class="modal-body">
+        <p>Rate your task performance and status:</p>
+
+        <div class="mb-3">
+          <label class="form-label">Rating:</label><br>
+          <% 1.upto(5) do |star| %>
+            <button type="button" class="btn btn-outline-warning btn-sm rating-btn" data-rating="<%= star %>"><%= star %></button>
+          <% end %>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Status:</label><br>
+          <button type="button" class="btn btn-outline-secondary status-btn" data-status="Incomplete">Incomplete</button>
+          <button type="button" class="btn btn-outline-success status-btn" data-status="Completed">Completed</button>
+        </div>
+
+        <button type="button" class="btn btn-primary mt-2" id="submit-feedback-btn">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <audio id="notification-sound" src="<%= asset_path('end_timer.ogg') %>" preload="auto"></audio>
 
 <script>
@@ -93,6 +122,9 @@
     let timerId = null;
     let elapsed = 0;
     const sound = document.getElementById("notification-sound");
+    let actionToConfirm = null;
+    let selectedRating = 5;
+    let selectedStatus = "Completed";
 
     // Set timers for each subtask
     if (typeof subtasks !== "undefined") {
@@ -147,12 +179,59 @@
     window.focusPanelTimerId = setTimeout(updateTimer, 0);
 
     // Send Stats
-    // finishBtn.addEventListener("click", () => {
-    //   form.submit();
-    //   setTimeout(() => {
-    //     window.location.href = "/tasks";
-    //   }, 500);
-    // });
+    finishBtn.addEventListener("click", () => {
+      actionToConfirm = "submit";
+      confirmationModal.show();
+    });
+
+    const confirmationModal = new bootstrap.Modal(document.getElementById("confirmationModal"));
+
+    document.getElementById("trigger-exit")?.addEventListener("click", function () {
+      actionToConfirm = "exit";
+      confirmationModal.show();
+    });
+
+    document.getElementById("trigger-submit")?.addEventListener("click", function () {
+      actionToConfirm = "submit";
+      confirmationModal.show();
+    });
+
+    document.getElementById("confirmAction")?.addEventListener("click", function () {
+      if (actionToConfirm === "submit") {
+        finalizeStatistic();
+        document.getElementById("focus-form").submit();
+      } else if (actionToConfirm === "exit") {
+        window.location.href = "/tasks";
+      }
+    });
+
+    // Set rating buttons
+    document.querySelectorAll(".rating-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        selectedRating = parseInt(button.dataset.rating, 10);
+        document.querySelectorAll(".rating-btn").forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+      });
+    });
+
+    // Set status buttons
+    document.querySelectorAll(".status-btn").forEach(button => {
+      button.addEventListener("click", () => {
+        selectedStatus = button.dataset.status;
+        document.querySelectorAll(".status-btn").forEach(b => b.classList.remove("active"));
+        button.classList.add("active");
+      });
+    });
+
+    // Confirm feedback and submit
+    document.getElementById("submit-feedback-btn").addEventListener("click", () => {
+      document.querySelector('input[name="input_rating"]').value = selectedRating;
+      document.querySelector('input[name="input_status"]').value = selectedStatus;
+
+      confirmationModal.hide();
+      finalizeStatistic();
+      form.submit();
+    });
   }
 
   document.addEventListener("turbo:load", startFocusTimer);
