@@ -151,8 +151,16 @@
       const now = new Date().toISOString();
       endTimeInput.value = now;
 
-      const placeholderPerformance = 87; // To be replaced by the actual calculation.
-      performanceInput.value = placeholderPerformance;
+      const startTime = new Date(document.querySelector('input[name="start_time"]').value);
+      const endTime = new Date();
+      const taskTimeInMinutes = parseInt(document.querySelector('input[name="duration"]').value || "25", 10);
+      const accomplishTimeInMinutes = (endTime - startTime) / 60000.0;
+      let timeUsage = 1 - ((taskTimeInMinutes - accomplishTimeInMinutes) / taskTimeInMinutes);
+      timeUsage = Math.max(0, Math.min(timeUsage, 1)); // Clamp between 0 and 1
+      let effectiveness = 1 - ((0.2 * timeUsage) - 0.16);
+      effectiveness = Math.max(0, Math.min(effectiveness, 1)); // Clamp
+      const performance = Math.round(effectiveness * 100);
+      performanceInput.value = performance;
 
       document.querySelectorAll('input[name="subtask_stats[][end_time]"]').forEach(input => input.value = now);
     }
