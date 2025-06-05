@@ -155,9 +155,10 @@
                   </button>
 
                   <!-- Delete -->
-                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, class: "button-or-xs" do %>
+                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, form: { data: { turbo_stream: true } }, class: "button-or-xs" do %>
                     <i class="fa fa-trash"></i>
                   <% end %>
+
                 </div>
               </li>
 
