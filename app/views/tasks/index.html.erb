@@ -38,6 +38,7 @@
 </script>
 <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
 
+
 <div class="dashboard-page font-main">
   <div class="container">
     <div class="top-section d-flex flex-wrap">
@@ -155,9 +156,10 @@
                   </button>
 
                   <!-- Delete -->
-                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, class: "button-or-xs" do %>
+                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, form: { data: { turbo_stream: true } }, class: "button-or-xs" do %>
                     <i class="fa fa-trash"></i>
                   <% end %>
+
                 </div>
               </li>
 
@@ -336,4 +338,21 @@ function redirectToDashboard(e) {
 
 }
 
+</script>
+
+<script>
+  // Recharge le background Vanta si une modale Bootstrap s'affiche
+  document.addEventListener('shown.bs.modal', function () {
+    // Si Vanta n'existe plus, on le recharge
+    if (!window.vantaBG) {
+      loadVantaBG();
+    }
+  });
+
+  // Optionnel : Reforce le Vanta après fermeture de modale aussi
+  document.addEventListener('hidden.bs.modal', function () {
+    if (!window.vantaBG) {
+      loadVantaBG();
+    }
+  });
 </script>
