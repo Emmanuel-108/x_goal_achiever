@@ -25,7 +25,14 @@ class StatisticsController < ApplicationController
           date: Time.parse("#{key}:00").strftime("%Y-%m-%d %H:%M"),
           avg: (performances.sum.to_f / performances.size).round(2),
           min: performances.min,
-          max: performances.max
+          max: performances.max,
+          subtasks: stats.select { |s| s.input_type == "Subtask" && s.input.present? }
+            .map do |stat|
+              {
+                name: stat.input.name,
+                time: stat.input.time
+              }
+            end
         }
       end
   end

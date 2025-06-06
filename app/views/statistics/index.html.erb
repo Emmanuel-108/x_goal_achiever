@@ -146,7 +146,17 @@ document.addEventListener("turbo:load", function() {
         tooltip: {
           mode: 'index',
           intersect: false,
-          animation: { duration: 150 }
+          animation: { duration: 150 },
+          padding: 25,
+          callbacks: {
+            afterLabel: function (context) {
+              const stat = stats[context.dataIndex];
+              if (!stat || !stat.subtasks || !stat.subtasks.length) return;
+              return stat.subtasks.map(st =>
+                `• ${st.name}: ${st.time} min`
+              );
+            }
+          }
         },
         zoom: {
           zoom: {
