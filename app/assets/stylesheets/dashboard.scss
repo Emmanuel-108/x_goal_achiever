@@ -31,7 +31,7 @@
   border-radius: 12px;
   background: transparent;
 
-
+  // Scrollbar styles
   scrollbar-gutter: stable both-edges;
 
   &::-webkit-scrollbar {
@@ -159,16 +159,17 @@
 body.modal-open {
   overflow: hidden !important;
 
-.custom-modal {
-  max-width: 600px;
-}
+  .custom-modal {
+    max-width: 500px;
+  }
 
-.modal-content {
-  background: rgba(255,255,255,0.95) !important; // Blanc léger, laisse passer le Vanta
-  backdrop-filter: blur(8px);
-  border-radius: 20px;
-  box-shadow: 0 0 24px rgba(0,0,0,0.12);
-}
+  .modal-content {
+    background: rgba(255,255,255,0.95) !important; // Blanc léger, laisse passer le Vanta
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    box-shadow: 0 10 30px rgba(0,0,0,0.15);
+    border: none;
+  }
 }.modal-backdrop {
   background-color: transparent !important;
 }
@@ -182,20 +183,14 @@ body.modal-open {
   margin: 2rem auto;
 }
 
-
 .modal {
   z-index: 1055 !important;
 }
 
 .modal-backdrop.show {
-  opacity: 0 !important;
-}
-
-
-.modal-backdrop {
-  background: transparent !important;
-  opacity: 0 !important;
-  z-index: 0 !important;
+  background-color: rgba(0, 0, 0, 1.0) !important;
+  backdrop-filter: blur(2px);
+  z-index: 1050 !important;
 }
 
 .modal {
