@@ -147,13 +147,11 @@ document.addEventListener("turbo:load", function() {
           mode: 'index',
           intersect: false,
           animation: { duration: 150 },
-          padding: 16,
+          padding: 25,
           callbacks: {
-            label: () => null,
             afterLabel: function (context) {
               const stat = stats[context.dataIndex];
               if (!stat || !stat.subtasks || !stat.subtasks.length) return;
-
               return stat.subtasks.map(st =>
                 `• ${st.name}: ${st.time} min`
               );
