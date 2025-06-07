@@ -31,7 +31,6 @@
   document.addEventListener("DOMContentLoaded", loadVantaBG);
 </script>
 
-<%= stylesheet_link_tag "dashboard", "data-turbo-track": "reload" %>
 
 <script type="application/json" id="tasks-data">
   <%= @tasks.group_by_day(:created_at, range: 4.days.ago.beginning_of_day..Time.now).count.to_json.html_safe %>
