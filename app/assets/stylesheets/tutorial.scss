@@ -1,0 +1,77 @@
+.tutorial-page {
+  h1 {
+    font-weight: 700;
+    font-size: 3rem;
+    color: #ffffff;
+  }
+
+  .tutorial-card {
+    background: #dbe2ef;
+    border-radius: 20px;
+    padding: 2rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    h4 {
+      color: #112D4E;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 1rem;
+      color: #444;
+    }
+  }
+
+  .modal-dialog {
+    max-width: 60vw !important;
+  }
+
+  .modal-body {
+    padding: 0;
+
+    img {
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+      max-height: 500px;
+    }
+  }
+
+  .carousel-item > div {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .carousel-control-prev-icon,
+  .carousel-control-next-icon {
+    background-color: #112D4E;
+    border-radius: 50%;
+    padding: 1.2rem;
+    filter: brightness(2);
+  }
+
+  .btn-close {
+    filter: invert(1);
+  }
+}
+.custom-modal-bg {
+  background-color: #dbe2ef !important;
+}
+.modal-content.custom-modal-bg {
+  background-color: #dbe2ef !important;
+}
+
+.tutorial-page {
+  color: #203F64;
+
+  h1, h2, h3, h4, h5, h6, p, a {
+    color: #203F64 !important;
+  }
+}
