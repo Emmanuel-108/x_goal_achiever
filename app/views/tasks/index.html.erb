@@ -181,15 +181,20 @@
                   <% end %>
                 </ul>
 
-                <!-- Show pencil -->
-                <div class="d-flex justify-content-end mt-2">
+                <!-- Actions: Edit + Reuse task -->
+                <div class="d-flex justify-content-end mt-2 gap-2">
+                  <!-- Focus Star Icon -->
+                  <%= link_to new_task_statistic_path(task_id: task.id), class: "button-or-xs", title: "Focus Panel" do %>
+                    <i class="fas fa-star text-warning"></i>
+                  <% end %>
+                  <!-- Edit Pencil Icon -->
                   <button type="button" class="button-or-xs" data-bs-toggle="modal" data-bs-target="#inlineEditModal-<%= task.id %>">
                     <i class="fa fa-pen"></i>
                   </button>
                 </div>
               </li>
 
-              <!-- MODALE -->
+              <!-- Update Task Modal -->
               <div class="modal fade" id="inlineEditModal-<%= task.id %>" tabindex="-1" aria-labelledby="inlineEditModalLabel-<%= task.id %>" aria-hidden="true" data-bs-backdrop="false">
                 <div class="modal-dialog modal-dialog-centered custom-modal">
                   <div class="modal-content bg-cloud">
