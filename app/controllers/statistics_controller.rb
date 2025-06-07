@@ -22,7 +22,7 @@ class StatisticsController < ApplicationController
       .map do |key, stats|
         performances = stats.map(&:input_performance).compact
         {
-          date: Time.parse("#{key}:00").strftime("%Y-%m-%d %H:%M"),
+          date: Time.parse("#{key}:00").strftime("%b %d, %H:%M"),
           avg: (performances.sum.to_f / performances.size).round(2),
           min: performances.min,
           max: performances.max,
