@@ -90,7 +90,7 @@
         <h5 class="modal-title" id="feedbackModalLabel">How did it go?</h5>
       </div>
       <div class="modal-body">
-        <p>Rate your task performance and status:</p>
+        <p>Rate your task performance and status.</p>
 
         <div class="mb-3">
           <label class="form-label">Rating:</label><br>
@@ -102,10 +102,10 @@
         <div class="mb-3">
           <label class="form-label">Status:</label><br>
           <button type="button" class="btn btn-outline-secondary status-btn" data-status="Incomplete">Incomplete</button>
-          <button type="button" class="btn btn-outline-success status-btn" data-status="Completed">Completed</button>
+          <button type="button" class="button-completed status-btn" data-status="Completed">Completed</button>
         </div>
 
-        <button type="button" class="btn btn-primary mt-2" id="submit-feedback-btn">Submit</button>
+        <button type="button" class="btn button-or mt-2" id="submit-feedback-btn">Submit</button>
       </div>
     </div>
   </div>
@@ -226,8 +226,8 @@
     document.querySelectorAll(".status-btn").forEach(button => {
       button.addEventListener("click", () => {
         selectedStatus = button.dataset.status;
-        document.querySelectorAll(".status-btn").forEach(b => b.classList.remove("active"));
-        button.classList.add("active");
+        document.querySelectorAll(".status-btn").forEach(b => b.classList.remove("selected"));
+        button.classList.add("selected");
       });
     });
 

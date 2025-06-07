@@ -26,7 +26,7 @@ puts "📊 Generating statistics over the past 7 days..."
   day = today - i.days
 
   rand(3..10).times do
-    task_time = rand(10..60).minutes
+    task_time = (rand(10..60).minutes / 60)
     creation_time = day + rand(8..18).hours
     nouns = %w[
       Homework Exercise Gym Code Cook Read Nap Work Groceries Write
@@ -56,7 +56,7 @@ puts "📊 Generating statistics over the past 7 days..."
 
     rand(2..4).times do
       verbs = %w[Do Create Execute Deliver Finish Plan Review Check Write Submit]
-      subtask_time = rand(5..40).minutes
+      subtask_time = (rand(5..40).minutes / 60)
       creation_time_s = creation_time + subtask_time
       subtask = Subtask.create!(
         name: "To #{verbs.sample}",
