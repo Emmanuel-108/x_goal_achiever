@@ -54,7 +54,9 @@
 
   &:active {
     transform: scale(0.95);
-    
+  }
+}
+
 .button-completed {
   @extend .btn;
 
