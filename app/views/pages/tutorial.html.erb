@@ -1,0 +1,73 @@
+<div class="container-fluid tutorial-page font-main py-5 position-relative" style="min-height: 100vh;">
+
+  <h1 class="text-center mb-4 display-2">📘 Welcome to Your Productivity Dashboard</h1>
+  <p class="lead text-center mb-5">Discover the features of your app and how to make the most of it. Click any panel to learn more.</p>
+
+  <div class="row row-cols-1 row-cols-md-2 g-5 mb-5 px-4">
+    <% tutorials = [
+      { title: "Create Task", desc: "Quickly create tasks with time and subtask distribution.", icon: "fa-plus-circle", slide: 0 },
+      { title: "Recent Tasks", desc: "Access, edit, and manage your recent activity.", icon: "fa-clock", slide: 1 },
+      { title: "Statistics", desc: "Visualize your focus and performance trends.", icon: "fa-chart-line", slide: 2 },
+      { title: "Contact", desc: "Reach out for help or feedback.", icon: "fa-envelope", slide: 3 }
+    ] %>
+
+    <% tutorials.each do |t| %>
+      <div class="col">
+        <div class="card tutorial-card h-100 shadow-lg p-5" style="min-height: 420px;">
+          <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
+            <i class="fas <%= t[:icon] %> fa-5x mb-4 text-primary"></i>
+            <h2 class="mb-3"><%= t[:title] %></h2>
+            <p class="text-muted mb-4 px-3"><%= t[:desc] %></p>
+            <button class="button-or" data-bs-toggle="modal" data-bs-target="#tutorialModal" data-slide-to="<%= t[:slide] %>">View Tutorial</button>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="text-center mt-4">
+    <%= link_to "← Back to Dashboard", tasks_path, class: "btn btn-outline-light shadow rounded-pill px-5 py-3 fw-bold" %>
+  </div>
+</div>
+
+<!-- Tutorial Modal with Carousel -->
+<div class="modal fade" id="tutorialModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" style="max-width: 60vw;">
+    <div class="modal-content custom-modal-bg rounded-4">
+
+      <div class="modal-header">
+        <h5 class="modal-title">Tutorial</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body p-0">
+        <div id="carouselTutorial" class="carousel slide" data-bs-interval="false">
+          <div class="carousel-inner">
+            <% slides = [
+              { title: "Create Task", image: "image1.png", desc: "Learn how to quickly create a task, assign duration, and set subtasks." },
+              { title: "Recent Tasks", image: "image2.png", desc: "Manage your task history, edit or delete recent items." },
+              { title: "Statistics", image: "image3.png", desc: "Understand your focus and performance via intuitive charts." },
+              { title: "Contact", image: "image4.png", desc: "Use the contact section to reach us for help or suggestions." }
+            ] %>
+
+            <% slides.each_with_index do |s, i| %>
+              <div class="carousel-item <%= 'active' if i == 0 %>">
+                <div class="d-flex flex-column align-items-center justify-content-center text-center p-5" style="min-height: 70vh;">
+                  <h3 class="mb-3"><%= s[:title] %></h3>
+                  <p class="mb-4"><%= s[:desc] %></p>
+                  <img src="<%= asset_path("tutorials/#{s[:image]}") %>" class="img-fluid rounded shadow" style="max-height: 500px;">
+                </div>
+              </div>
+            <% end %>
+          </div>
+
+          <button class="carousel-control-prev" type="button" data-bs-target="#carouselTutorial" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#carouselTutorial" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
