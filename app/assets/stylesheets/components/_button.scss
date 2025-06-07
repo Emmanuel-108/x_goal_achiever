@@ -34,8 +34,9 @@
   background-color: transparent;
   color: #3b628e;
   border: 1px solid #3b628e;
+  border-color: #3b628e;
   padding: 0.375rem 0.75rem;
-  border-radius: 0.375rem;
+  border-radius: 5px;
   transition: all 0.15s ease-in-out;
 
   &:hover,
@@ -51,8 +52,30 @@
   }
 }
 
+.btn-outline-secondary.status-btn.selected {
+  background-color: #6c757d;
+  color: #fff;
+  border-color: #6c757d;
+}
+
 .button-completed.selected {
   background-color: #3b628e;
   color: #fff;
   border-color: #3b628e;
+}
+
+.rating-btn.btn-outline-warning {
+  color: #DAA520;
+  border-color: #DAA520;
+
+  &:hover,
+  &.selected {
+    background-color: #DAA520;
+    color: #fff;
+    border-color: #DAA520;
+  }
+
+  &:focus {
+    box-shadow: none;
+  }
 }

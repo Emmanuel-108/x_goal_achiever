@@ -226,8 +226,8 @@
     document.querySelectorAll(".status-btn").forEach(button => {
       button.addEventListener("click", () => {
         selectedStatus = button.dataset.status;
-        document.querySelectorAll(".status-btn").forEach(b => b.classList.remove("active"));
-        button.classList.add("active");
+        document.querySelectorAll(".status-btn").forEach(b => b.classList.remove("selected"));
+        button.classList.add("selected");
       });
     });
 
