@@ -4,41 +4,11 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.0.1"></script>
-<%# <!-- VANTA + THREE.js -->
-<div id="vanta-background" style="position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:-1;"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.fog.min.js"></script>
-
-<script>
-  function loadVantaBG() {
-    if (window.vantaBG && typeof window.vantaBG.destroy === "function") {
-      window.vantaBG.destroy();
-      window.vantaBG = null;
-    }
-    window.vantaBG = VANTA.FOG({
-      el: "#vanta-background",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            highlightColor: 0x112D4E,
-            midtoneColor: 0xe6e6e6,
-            lowlightColor: 0xebebeb,
-            baseColor: 0xffffff
-          });
-  }
-  document.addEventListener("turbo:load", loadVantaBG);
-  document.addEventListener("DOMContentLoaded", loadVantaBG);
-</script> %>
-
 
 <script type="application/json" id="tasks-data">
   <%= @tasks.group_by_day(:created_at, range: 4.days.ago.beginning_of_day..Time.now).count.to_json.html_safe %>
 </script>
 <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
-
 
 <div class="dashboard-page font-main">
   <div class="container">
@@ -50,9 +20,6 @@
           <h2 class="text-center">Statistics</h2>
           <div class="graph-placeholder" style="max-width:660px; margin:auto; width: 600px; height: 400px;">
             <canvas id="statsChart" width="600" height="400" style="width: 600px; height: 400px;"></canvas>
-            <%#= tag.script id: "tasks-data", type: "application/json" do %>
-              <%#= @chart_data.to_json.html_safe %>
-            <%# end %>
           </div>
           <%= link_to "📊 Advanced Statistics", statistics_path, class: "button-or mt-4 d-block mx-auto" %>
         </div>
@@ -201,22 +168,22 @@
               <div class="modal fade" id="inlineEditModal-<%= task.id %>" tabindex="-1" aria-labelledby="inlineEditModalLabel-<%= task.id %>" aria-hidden="true" data-bs-backdrop="false">
                 <div class="modal-dialog modal-dialog-centered custom-modal">
                   <div class="modal-content bg-cloud">
-                    <%= form_with(model: task, url: task_path(task), method: :patch, data: { turbo: false }, html: { onsubmit: "redirectToDashboard(event)" }) do |f| %>
+                    <%= form_with(model: task, url: task_path(task), method: :patch, data: { turbo: false }, class: "modal-update", html: { onsubmit: "redirectToDashboard(event)" }) do |f| %>
                       <div class="modal-header">
-                        <h5 class="modal-title" id="inlineEditModalLabel-<%= task.id %>">Update Task</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <h5 class="modal-title modal-update" id="inlineEditModalLabel-<%= task.id %>">Update Task</h5>
+                        <button type="button" class="btn-close modal-update" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
                         <div class="mb-3">
-                          <%= f.label :name, "Task Name", class: "form-label" %>
+                          <%= f.label :name, "Task Name", class: "form-label modal-update" %>
                           <%= f.text_field :name, class: "form-control", required: true %>
                         </div>
                         <div class="mb-3">
-                          <%= f.label :time, "Time (min)", class: "form-label" %>
+                          <%= f.label :time, "Time (min)", class: "form-label modal-update" %>
                           <%= f.number_field :time, class: "form-control", min: 1, required: true %>
                         </div>
                         <div class="mb-3">
-                          <%= f.label :description, "Description", class: "form-label" %>
+                          <%= f.label :description, "Description", class: "form-label modal-update" %>
                           <%= f.text_area :description, rows: 2, class: "form-control" %>
                         </div>
                       </div>
@@ -268,17 +235,7 @@ function loadStatsChart() {
   }
 
   const chartData = JSON.parse(dataElement.textContent);
-  // const labels = Object.keys(chartData)
-  // const labels = Object.keys(chartData).map(dateStr => {
-  //   const date = new Date(dateStr);
-  //   return date.toLocaleDateString(undefined, { weekday: 'long' });
-  // });
-  // const values = Object.values(chartData);
   const labels = last5Dates.map(d => d.toLocaleDateString(undefined, { weekday: 'long' }));
-  // const values = last5Dates.map(d => {
-  //   const key = d.toISOString().slice(0,10); // format yyyy-mm-dd
-  //   return chartData[key] || 0;
-  // });
   const values = last5Dates.map(d => {
     const localKey = d.getFullYear() + '-' +
                     String(d.getMonth() + 1).padStart(2, '0') + '-' +
@@ -298,7 +255,7 @@ function loadStatsChart() {
     data: {
       labels: labels,
       datasets: [{
-        label: "Performed Tasks",
+        label: "Created Tasks",
         data: values,
         backgroundColor: gradient,
         borderColor: "#5f68c3",
