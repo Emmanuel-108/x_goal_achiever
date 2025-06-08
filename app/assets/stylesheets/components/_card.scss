@@ -36,8 +36,8 @@
     position: absolute;
     width: 1%;
     height: 1%;
-    background-color: rgb(238, 238, 238);
-    transition: all 0.5s ease;
+    background-color: rgb(234, 237, 247);
+    transition: all 1s ease;
     z-index: 1;
     opacity: 0;
   }
@@ -79,7 +79,7 @@
 
 .cardform:hover {
   transform: scale(1.02);
-  background-color: rgb(238, 238, 238);
+  background-color: rgb(234, 237, 247);
 }
 
 .cardform:active {

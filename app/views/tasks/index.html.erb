@@ -143,31 +143,30 @@
             </div>
           <% end %>
         </div>
-        <!-- Recent Tasks Panel -->
 
+      <!-- Recent Tasks Panel -->
       <div class="recent-tasks card">
         <h3 class="text-center mb-3">Recent Tasks</h3>
         <div class="recent-tasks-inner">
           <ul class="task-list">
-            <% @tasks.order(created_at: :desc).limit(10).each do |task| %>
-              <!-- Tâche principale -->
+            <% @tasks.order(created_at: :desc).limit(15).each do |task| %>
+              <!-- Task Information + Delete option -->
               <li id="task-<%= task.id %>" class="recent-task-item d-flex justify-content-between align-items-center position-relative">
                 <span><%= task.name %></span>
                 <div class="task-actions">
-                  <!-- Détails -->
+                  <!-- Task Details -->
                   <button class="button-or-xs" type="button" data-bs-toggle="collapse" data-bs-target="#task-details-<%= task.id %>">
                     <i class="fa fa-ellipsis-h"></i>
                   </button>
 
                   <!-- Delete -->
-                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, form: { data: { turbo_stream: true } }, class: "button-or-xs" do %>
+                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, form: { data: { turbo_stream: true } }, class: "button-remove" do %>
                     <i class="fa fa-trash"></i>
                   <% end %>
-
                 </div>
               </li>
 
-              <!-- Détails -->
+              <!-- Task Details Expanded -->
               <li id="task-details-<%= task.id %>" class="collapse task-details-box fade-in bg-light rounded p-3 mb-3">
                 <ul class="list-unstyled small text-muted mb-0">
                   <li><strong>Time:</strong> <%= task.time %> min</li>
@@ -178,7 +177,7 @@
                     <li><strong>Subtasks:</strong>
                       <ul class="mb-0">
                         <% task.subtasks.each do |sub| %>
-                          <li>- <%= sub.name %> (<%= sub.time %> min)</li>
+                          <li><%= sub.name %> (<%= sub.time %> min)</li>
                         <% end %>
                       </ul>
                     </li>
@@ -346,7 +345,6 @@ function loadStatsChart() {
 document.addEventListener("turbo:load", loadStatsChart);
 document.addEventListener("DOMContentLoaded", loadStatsChart);
 </script>
-
 
 <script>
 function redirectToDashboard(e) {

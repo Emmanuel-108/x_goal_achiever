@@ -147,7 +147,13 @@ html, body {
       transition: opacity 0.3s ease;
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 4px;
+
+      form {
+        margin-top: 6px;
+        margin-bottom: 6px;
+        padding: 0;
+      }
     }
 
     &:hover .task-actions {
@@ -160,6 +166,22 @@ html, body {
       padding: 4px;
       font-size: 0.85rem;
       color: #555;
+    }
+
+    .button-remove {
+      background-color: #112D4E;
+      margin-right: 16px;
+      margin-left: 4px;
+
+      &:hover {
+        background-color: #991b1b; // Slight darker red
+        color: white;
+        text-decoration: none;
+
+        i {
+          color: white;
+        }
+      }
     }
 
     .fa-trash {
