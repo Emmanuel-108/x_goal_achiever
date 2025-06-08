@@ -40,7 +40,8 @@ puts "📊 Generating statistics over the past 7 days..."
       description: Faker::Company.catch_phrase + ".",
       time: task_time,
       user_id: user.id,
-      created_at: creation_time
+      created_at: creation_time,
+      updated_at: creation_time
     )
 
     Statistic.create!(
@@ -63,7 +64,8 @@ puts "📊 Generating statistics over the past 7 days..."
         description: Faker::Hacker.say_something_smart,
         time: subtask_time,
         task_id: task.id,
-        created_at: creation_time_s
+        created_at: creation_time_s,
+        updated_at: creation_time_s
       )
 
       Statistic.create!(
