@@ -45,11 +45,51 @@
   i {
     font-size: 0.7rem;
     color: white;
+    text-decoration: none;
   }
 
   &:hover {
     background-color: #274b74;
     color: white;
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.button-remove {
+  padding: 5px 10px;
+  margin-right: 16px;
+  margin-left: 4px;
+  font-size: 0.72rem;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #112D4E;
+  color: white;
+  border: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  height: 28px;
+  cursor: pointer;
+
+  i {
+    font-size: 0.7rem;
+    color: white;
+    text-decoration: none;
+  }
+
+  &:hover {
+    background-color: #991b1b; // Slight darker red
+    color: white;
+    text-decoration: none;
+
+    i {
+      color: white;
+    }
   }
 
   &:active {
