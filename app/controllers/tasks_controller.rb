@@ -5,6 +5,45 @@ class TasksController < ApplicationController
 
   def index
     @tasks = Task.all
+
+    @chart_data = Task.group_by_day(:created_at, last: 7)
+                      .count
+                      .map { |date, count| [date.strftime("%A"), count] }
+                      .to_h
+
+    # @chart_data = Task.group_by_day(:created_at, last: 7, time_zone: Time.zone.name)
+    #               .count
+    #               .each_with_object(Hash.new(0)) do |(date, count), result|
+    #                 weekday = date.strftime("%A")
+    #                 result[weekday] += count
+    #               end
+
+    # # Ensure all weekdays are represented in correct order
+    # ordered_weekdays = %w[Monday Tuesday Wednesday Thursday Friday Saturday Sunday]
+
+    # @chart_data = ordered_weekdays.index_with { |day| @chart_data[day] || 0 }
+
+
+
+    # # Get last 7 days dates including today, descending (today first, then yesterday, etc.)
+    # dates = (0..6).map { |i| Time.zone.today - i.days }
+
+    # # Group tasks by day for last 7 days
+    # counts_by_date = Task.group_by_day(:created_at, range: dates.last.beginning_of_day..dates.first.end_of_day, time_zone: Time.zone.name).count
+
+    # # Map dates to weekday names with counts, summing if multiple same weekdays occur (since 7 days span more than one week)
+    # weekday_counts = Hash.new(0)
+    # dates.each do |date|
+    #   weekday = date.strftime("%A")
+    #   count = counts_by_date[date.beginning_of_day] || 0
+    #   weekday_counts[weekday] += count
+    # end
+
+    # Build ordered hash from today backward (no duplicates because dates are unique)
+    # ordered_weekdays = dates.map { |d| d.strftime("%A") }.uniq
+
+    # @chart_data = ordered_weekdays.index_with { |day| weekday_counts[day] || 0 }
+
   end
 
   def show
@@ -54,7 +93,6 @@ class TasksController < ApplicationController
       end
     end
   end
-
 
   private
 
