@@ -2,13 +2,23 @@
 
 <div class="login-page body">
   <div class="login-container">
+
+    <div data-controller="profile-image">
+      <%= form_with model: @user, url: profile_path, html: { multipart: true }, method: :patch, local: true do |form| %>
+        <%= form.file_field :photo, class: "d-none", data: { profile_image_target: "fileInput", action: "change->profile-image#fileChanged" } %>
+      <% end %>
+      <a href="#" class="avatar-profile" id="avatarClick" data-profile-image-target="imageElement" data-action="click->profile-image#upload">
+        <%= image_tag(@user.photo.attached? ? url_for(@user.photo) : "avatar.png", class: "avatar-profile", alt: "Your avatar") %>
+      </a>
+    </div>
+
     <h1 class="body form-text">My Profile</h1>
 
     <%= form_with(model: @user, url: profile_path, method: :patch, local: true, html: { class: "login-form" }) do |form| %>
 
       <% if @user.errors.any? %>
         <div class="errors">
-          <h2>Error :</h2>
+          <h2>Error:</h2>
           <ul>
             <% @user.errors.full_messages.each do |message| %>
               <li><%= message %></li>
@@ -33,7 +43,7 @@
       </div>
 
       <div class="form-group text-center">
-        <%= form.submit "Update", class: "btn body" %>
+        <%= form.submit "Update", class: "btn button-or" %>
       </div>
 
     <% end %>
