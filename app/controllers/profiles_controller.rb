@@ -12,7 +12,7 @@ class ProfilesController < ApplicationController
   def update
     @user = current_user
     if @user.update(user_params)
-      redirect_to root_path, notice: "Profile successfully updated! 🎉"
+      redirect_to tasks_path, notice: "Profile successfully updated! 🎉"
     else
       render :edit, status: :unprocessable_entity
     end

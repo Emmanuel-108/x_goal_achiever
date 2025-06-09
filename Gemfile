@@ -11,6 +11,9 @@ gem 'groupdate'
 # Faker gem for Seed
 gem 'faker'
 
+# Cloudinary gem
+gem "cloudinary"
+
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 7.1.5", ">= 7.1.5.1"
 
