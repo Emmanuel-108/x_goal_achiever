@@ -149,12 +149,15 @@ document.addEventListener("turbo:load", function() {
           animation: { duration: 150 },
           padding: 25,
           callbacks: {
-            afterLabel: function (context) {
-              const stat = stats[context.dataIndex];
-              if (!stat || !stat.subtasks || !stat.subtasks.length) return;
-              return stat.subtasks.map(st =>
-                `• ${st.name}: ${st.time} min`
-              );
+            footer: function (tooltipItems) {
+            const index = tooltipItems[0]?.dataIndex;
+            const stat = stats[index];
+            if (!stat || !stat.subtasks || !stat.subtasks.length) return;
+
+            return [
+              'Subtasks:',
+              ...stat.subtasks.map(st => `• ${st.name} - ${st.time} min`)
+            ];
             }
           }
         },
