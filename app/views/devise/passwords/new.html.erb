@@ -7,7 +7,7 @@
 
       <% if resource.errors.any? %>
         <div class="errors">
-          <h2>Erreur :</h2>
+          <h2>Error:</h2>
           <ul>
             <% resource.errors.full_messages.each do |message| %>
               <li><%= message %></li>
@@ -22,7 +22,7 @@
       </div>
 
       <div class="form-group text-center">
-        <%= form.submit "Send Instructions", class: "btn" %>
+        <%= form.submit "Send Instructions", class: "btn button-or" %>
       </div>
 
       <div class="form-links">
