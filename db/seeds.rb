@@ -82,3 +82,16 @@ puts "📊 Generating statistics over the past 7 days..."
 end
 
 puts "✅ Done!"
+
+puts "🧪 Creating demo task with 10 seconds duration..."
+
+demo_task = Task.create!(
+  name: "Demo Task",
+  description: "This task is for demo purposes only.",
+  time: 1.minutes / 6,
+  user_id: user.id,
+  created_at: Time.zone.now,
+  updated_at: Time.zone.now
+)
+
+puts "🎯 Demo task created: #{demo_task.name} with time #{demo_task.time} seconds"
