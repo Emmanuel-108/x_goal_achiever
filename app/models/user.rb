@@ -14,7 +14,7 @@ class User < ApplicationRecord
   has_many :statistics, as: :input
 
   # Validations to be added after having a complete seed.
-  # validates :first_name, :last_name, :date_of_birth, presence: true
-  # validates :email, format: { with: /\A.*@.*\.com\z/, message: "must be a valid .com address" }
-  # validates :gender, presence: true, inclusion: { in: ["Male", "Female", "Other"], message: "%{value} is not a valid gender" }
+  validates :first_name, :last_name, :date_of_birth, presence: true
+  validates :email, format: { with: /\A.*@.*\.com\z/, message: "must be a valid .com address" }
+  validates :gender, presence: true, inclusion: { in: ["Male", "Female", "Other"], message: "%{value} is not a valid gender" }
 end

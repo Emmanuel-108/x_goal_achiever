@@ -1,125 +1,100 @@
+// Tasks#index chart
 
-// Testing code with fixed values
-
-// document.addEventListener("DOMContentLoaded", function () {
-
-//   const ctx = document.getElementById('statsChart').getContext('2d');
-//   const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-//   gradient.addColorStop(0, '#7C3AED');
-//   gradient.addColorStop(1, '#3B82F6');
-
-//   new Chart(ctx, {
-//     type: 'bar',
-//     data: {
-//       labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-//       datasets: [{
-//         label: 'Completed Tasks',
-//         data: [3, 7, 4, 5, 6],
-//         backgroundColor: gradient,
-//         borderRadius: 10,
-//         hoverBackgroundColor: '#4F46E5'
-//       }]
-//     },
-//     options: {
-//       responsive: true,
-//       plugins: {
-//         legend: {
-//           labels: {
-//             color: '#374151',
-//             font: {
-//               family: 'Outfit',
-//               size: 14,
-//               weight: 'bold'
-//             }
-//           }
-//         },
-//         tooltip: {
-//           backgroundColor: '#1F2937',
-//           titleColor: '#E5E7EB',
-//           bodyColor: '#E5E7EB',
-//           cornerRadius: 6,
-//           padding: 10
-//         }
-//       },
-//       scales: {
-//         x: {
-//           ticks: { color: '#4B5563', font: { family: 'Outfit', size: 13 } },
-//           grid: { display: false }
-//         },
-//         y: {
-//           beginAtZero: true,
-//           ticks: { color: '#4B5563', font: { family: 'Outfit', size: 13 } },
-//           grid: { color: '#E5E7EB' }
-//         }
-//       },
-//       animation: { duration: 1000, easing: 'easeOutQuart' }
-//     }
-//   });
-// });
-
-// Graph Statistics in the Task Index View
-
-document.addEventListener("DOMContentLoaded", function () {
-  const canvas = document.getElementById('statsChart');
+function loadStatsChart() {
+  const canvas = document.getElementById("statsChart");
   if (!canvas) return;
 
-  const ctx = canvas.getContext('2d');
-  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, '#7C3AED');
-  gradient.addColorStop(1, '#3B82F6');
+  if (window.statsChartInstance) {
+    try { window.statsChartInstance.destroy(); } catch(e) {}
+    window.statsChartInstance = null;
+  }
 
-  const taskDataElement = document.getElementById('tasks-data');
-  if (!taskDataElement) return;
+  const dataElement = document.getElementById("tasks-data");
+  if (!dataElement) return;
 
-  const taskData = JSON.parse(taskDataElement.textContent);
-  const labels = Object.keys(taskData);
-  const data = Object.values(taskData);
+  const today = new Date();
+  const last5Dates = [];
 
-  new Chart(ctx, {
-    type: 'bar',
+  for (let i = 4; i >= 0; i--) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    last5Dates.push(d);
+  }
+
+  const chartData = JSON.parse(dataElement.textContent);
+  const labels = last5Dates.map(d => d.toLocaleDateString(undefined, { weekday: 'long' }));
+  const values = last5Dates.map(d => {
+    const localKey = d.getFullYear() + '-' +
+                    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(d.getDate()).padStart(2, '0');
+    return chartData[localKey] || 0;
+  });
+
+  // Degradation colors
+  const ctx = canvas.getContext("2d");
+  let gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, "#5f68c3");
+  gradient.addColorStop(0.5, "#a18cd1");
+  gradient.addColorStop(1, "#4fc3f7");
+
+  window.statsChartInstance = new Chart(ctx, {
+    type: "bar",
     data: {
       labels: labels,
       datasets: [{
-        label: 'Completed Tasks',
-        data: data,
+        label: "Created Tasks",
+        data: values,
         backgroundColor: gradient,
-        borderRadius: 10,
-        hoverBackgroundColor: '#4F46E5'
+        borderColor: "#5f68c3",
+        borderWidth: 1.5,
+        borderRadius: 8
       }]
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
       plugins: {
-        legend: {
-          labels: {
-            color: '#374151',
-            font: {
-              family: 'Outfit',
-              size: 14,
-              weight: 'bold'
-            }
-          }
-        },
+        legend: { display: false },
         tooltip: {
-          backgroundColor: '#1F2937',
-          titleColor: '#E5E7EB',
-          bodyColor: '#E5E7EB',
-          cornerRadius: 6,
-          padding: 10
+          enabled: true,
+          mode: "index",
+          intersect: false,
+          animation: false
+        },
+        zoom: {
+          zoom: {
+            wheel: { enabled: true },
+            pinch: { enabled: true },
+            mode: "x"
+          },
+          pan: { enabled: true, mode: "x" }
         }
       },
+      hover: { mode: "nearest", intersect: true, animationDuration: 0 },
       scales: {
-        x: {
-          ticks: { color: '#4B5563', font: { family: 'Outfit', size: 13 } },
-          grid: { display: false }
-        },
         y: {
           beginAtZero: true,
-          ticks: { color: '#4B5563', font: { family: 'Outfit', size: 13 } },
-          grid: { color: '#E5E7EB' }
+          grid: { color: "#dbe2ef" },
+          ticks: { color: "#112D4E" },
+          title: {
+            display: false,
+            text: 'Created Tasks',
+            color: '#112D4E',
+            font: { size: 14, weight: 'bold' },
+            padding: { bottom: 10 },
+            rotation: -90,
+            align: 'center',
+            position: 'top'
+          }
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: "#112D4E" }
         }
-      },
-      animation: { duration: 1000, easing: 'easeOutQuart' }
+      }
     }
   });
-});
+}
+document.addEventListener("turbo:load", loadStatsChart);
+document.addEventListener("DOMContentLoaded", loadStatsChart);

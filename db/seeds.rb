@@ -10,13 +10,12 @@ User.destroy_all
 # Create a test user
 puts "👤 Creating test user..."
 user = User.create!(
-  id: 1,
   email: "test@test.com",
   password: "123123",
   first_name: "Admin",
   last_name: "User",
   date_of_birth: "2000-01-01",
-  gender: "male"
+  gender: "Male"
 )
 
 today = Time.zone.now.beginning_of_day
