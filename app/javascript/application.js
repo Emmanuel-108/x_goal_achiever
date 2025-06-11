@@ -9,3 +9,6 @@ import "contact_map"
 
 // Tasks - Index - Chart Graph
 import "statistics_graph_index"
+
+// Focus Panel
+import "focus_panel"

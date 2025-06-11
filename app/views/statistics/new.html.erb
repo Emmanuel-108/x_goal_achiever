@@ -113,9 +113,16 @@
 
 <audio id="notification-sound" src="<%= asset_path('end_timer.ogg') %>" preload="auto"></audio>
 
-<script>
+<%# <script>
   function startFocusTimer() {
-    let duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
+    let taskName = document.querySelector('.focus-content h2')?.textContent?.trim();
+    let duration;
+    if (taskName === "Demo Task") {
+        duration = 10;
+      } else {
+        duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
+      }
+    // let duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
     const display = document.getElementById('focus-timer');
     const finishBtn = document.getElementById('finish-btn');
     const form = document.getElementById("focus-form");
@@ -244,4 +251,4 @@
 
   document.addEventListener("turbo:load", startFocusTimer);
   document.addEventListener("DOMContentLoaded", startFocusTimer);
-</script>
+</script> %>
