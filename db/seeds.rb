@@ -86,9 +86,9 @@ puts "✅ Done!"
 puts "🧪 Creating demo task with 10 seconds duration..."
 
 demo_task = Task.create!(
-  name: "Demo Task",
-  description: "This task is for demo purposes only.",
-  time: 1.minutes / 6,
+  name: "Open the Web Portal",
+  description: "https://www.aircanada.com/home/ca/en/aco/flights",
+  time: 1,
   user_id: user.id,
   created_at: Time.zone.now,
   updated_at: Time.zone.now

@@ -1,7 +1,7 @@
 function startFocusTimer() {
   let taskName = document.querySelector('.focus-content h2')?.textContent?.trim();
   let duration;
-  if (taskName === "Demo Task") {
+  if (taskName === "Open the Web Portal") {
       duration = 10;
     } else {
       duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
@@ -48,7 +48,7 @@ function startFocusTimer() {
     const accomplishTimeInMinutes = (endTime - startTime) / 60000.0;
     let timeUsage = 1 - ((taskTimeInMinutes - accomplishTimeInMinutes) / taskTimeInMinutes);
     timeUsage = Math.max(0, Math.min(timeUsage, 1)); // Clamp between 0 and 1
-    let effectiveness = 1 - ((0.2 * timeUsage) - 0.16);
+    let effectiveness = 1 - ((0.2 * timeUsage) - 0.16); // To be modified if higher achievement standards are expected.
     effectiveness = Math.max(0, Math.min(effectiveness, 1)); // Clamp
     const performance = Math.round(effectiveness * 100);
     performanceInput.value = performance;
