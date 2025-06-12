@@ -83,3 +83,14 @@
 .cardform:active {
   transform: scale(0.98);
 }
+
+.card_advanced{
+  position: relative;
+  background: #dbe2ef;
+  border-radius: 15px;
+  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+  border: 2px solid #fff;
+  opacity: 90%;
+  margin: 15px 50px;
+  padding: 20px;
+}
