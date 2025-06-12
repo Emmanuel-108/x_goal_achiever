@@ -16,6 +16,11 @@ html, body {
 .container {
   flex: 1;
 }
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
 .top-section {
   display: flex;
