@@ -1,8 +1,8 @@
 function startFocusTimer() {
   let taskName = document.querySelector('.focus-content h2')?.textContent?.trim();
   let duration;
-  if (taskName === "Open the Web Portal") {
-      duration = 10;
+  if (taskName === "Breathe") {
+      duration = 20;
     } else {
       duration = parseInt(document.querySelector('input[name="duration"]').value || "25", 10) * 60;
     }
