@@ -36,7 +36,7 @@
       <div class="modal-content custom-modal-bg rounded-4">
         <div class="modal-header">
           <h5 class="modal-title">Tutorial</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close tutorial" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body p-0">
@@ -55,7 +55,7 @@
                     <h3 class="mb-3"><%= s[:title] %></h3>
                     <p class="mb-4"><%= s[:desc] %></p>
                     <video class="rounded shadow tutorial-video" style="max-height: 500px; width: 100%;" controls muted playsinline preload="auto">
-                      <source src="/videos/tutorials/<%= s[:video] %>#t=0.1" type="video/mp4">
+                      <source src="/videos/tutorials/<%= s[:video] %>" type="video/mp4">
                       Your browser does not support the video tag.
                     </video>
                   </div>

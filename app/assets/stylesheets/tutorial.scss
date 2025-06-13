@@ -51,10 +51,17 @@
 
   .carousel-control-prev-icon,
   .carousel-control-next-icon {
-    background-color: #112D4E;
+    // background-color: #112D4E;
+    background-color: transparent;
+    border-color: white;
+    border-style: solid;
     border-radius: 50%;
     padding: 1.2rem;
     filter: brightness(2);
+  }
+
+  .btn-close.tutorial {
+    filter: invert(23%) sepia(94%) saturate(1897%) hue-rotate(185deg) brightness(95%) contrast(88%);
   }
 
   .btn-close {
