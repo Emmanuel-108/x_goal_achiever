@@ -83,11 +83,11 @@ end
 
 puts "✅ Done!"
 
-puts "🧪 Creating demo task with 10 seconds duration..."
+puts "🧪 Creating demo task with 20 seconds duration..."
 
 demo_task = Task.create!(
-  name: "Open the Web Portal",
-  description: "https://www.aircanada.com/home/ca/en/aco/flights",
+  name: "Breathe",
+  description: "Breathe air before beginning a long task.",
   time: 1,
   user_id: user.id,
   created_at: Time.zone.now,

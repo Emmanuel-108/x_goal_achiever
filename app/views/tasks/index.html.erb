@@ -138,8 +138,9 @@
               <li id="task-details-<%= task.id %>" class="collapse task-details-box fade-in bg-light rounded p-3 mb-3">
                 <ul class="list-unstyled small text-muted mb-0">
                   <li><strong>Time:</strong> <%= task.time %> min</li>
-                  <% if task.name == "Open the Web Portal" %>
-                    <li><p><strong>Description:</strong> <%= link_to task.description, task.description, target: "_blank", rel: "noopener" %></p></li>
+                  <% if task.name == "Plan Trip" %>
+                    <% task.description = "https://www.aircanada.com/home/ca/en/aco/flights" %>
+                    <li><p><strong>Description:</strong> <%= link_to task.description, task.description, target: "_blank", rel: "noopener", style: "color: white" %></p></li>
                   <% elsif task.description.present? %>
                     <li><strong>Description:</strong> <%= task.description %></li>
                   <% end %>
