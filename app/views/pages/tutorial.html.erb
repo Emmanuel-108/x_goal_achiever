@@ -1,19 +1,19 @@
-<div class=" container-fluid tutorial-page font-main py-5 position-relative">
+<div class=" container-fluid tutorial-page font-main position-relative">
   <div class="card_advanced">
     <h1 class="text-center mb-4 display-2">📘 Welcome to Your Productivity Dashboard</h1>
     <p class="lead text-center mb-5">Discover the features of your app and how to make the most of it. Click any panel to learn more.</p>
 
-    <div class="row row-cols-1 row-cols-md-2 g-5 mb-5 px-4">
+    <div class="row row-cols-1 row-cols-md-2 g-5 mb-2 px-4">
       <% tutorials = [
         { title: "Create Task", desc: "Quickly create tasks with time and subtask distribution.", icon: "fa-plus-circle", slide: 0 },
         { title: "Recent Tasks", desc: "Access, edit, and manage your recent activity.", icon: "fa-clock", slide: 1 },
-        { title: "Statistics", desc: "Visualize your focus and performance trends.", icon: "fa-chart-line", slide: 2 },
-        { title: "Contact", desc: "Reach out for help or feedback.", icon: "fa-envelope", slide: 3 }
+        { title: "Statistics", desc: "Visualize your focus and performance trends throughout time.", icon: "fa-chart-line", slide: 2 },
+        { title: "Contact", desc: "Reach out for help or feedback. We will get back to you!", icon: "fa-envelope", slide: 3 }
       ] %>
 
       <% tutorials.each do |t| %>
         <div class="col">
-          <div class="card tutorial-card h-100 shadow-lg p-5" style="min-height: 420px;">
+          <div class="card tutorial-card h-100 shadow-lg">
             <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
               <i class="fas <%= t[:icon] %> fa-5x mb-4 text-primary"></i>
               <h2 class="mb-3"><%= t[:title] %></h2>

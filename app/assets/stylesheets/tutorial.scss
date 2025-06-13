@@ -1,15 +1,22 @@
 .tutorial-page {
-  min-height: calc(100vh - 68px - 62px);
+  min-height: calc(100vh - 68px - 62px - 2rem);
   h1 {
     font-weight: 700;
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: #ffffff;
+  }
+  h2{
+    font-size: 1.5rem;
+  }
+  i{
+    color: #112D4E !important;
+    font-size: 3rem;
   }
 
   .tutorial-card {
     background: #dbe2ef;
     border-radius: 20px;
-    padding: 2rem;
+    padding: 1.5rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 
