@@ -9,8 +9,8 @@ html, body {
 .dashboard-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   padding-top: 24px;
+  min-height: calc(100vh - 68px - 62px);
 }
 
 .container {

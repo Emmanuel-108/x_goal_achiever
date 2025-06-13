@@ -94,3 +94,25 @@
   margin: 15px 50px;
   padding: 20px;
 }
+
+.card_contact{
+  background: #dbe2ef;
+  border-radius: 15px;
+  box-shadow: 12px 17px 51px rgba(0, 0, 0, 0.22);
+  border: 2px solid #fff;
+  opacity: 90%;
+  margin: 15px 50px;
+  padding: 20px;
+}
+
+.card_map{
+  border: 2px solid #fdfdfd;
+  border-radius: 15px;
+  padding: 0px !important;
+
+  #map{
+    width: auto;
+    height: auto;
+    border-radius: 15px
+  }
+}
