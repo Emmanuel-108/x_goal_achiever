@@ -7,5 +7,8 @@ import "bootstrap"
 // contact page
 import "contact_map"
 
-// Index - Stats Graph
+// Tasks - Index - Chart Graph
 import "statistics_graph_index"
+
+// Focus Panel
+import "focus_panel"

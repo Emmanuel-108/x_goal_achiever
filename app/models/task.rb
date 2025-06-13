@@ -4,6 +4,7 @@ class Task < ApplicationRecord
   accepts_nested_attributes_for :subtasks, allow_destroy: true
   has_many :statistics, as: :input
   attr_accessor :distribution
+  validates :name, :time, presence: true
 
   before_save :assign_time_distribution
 

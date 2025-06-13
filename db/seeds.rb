@@ -10,13 +10,12 @@ User.destroy_all
 # Create a test user
 puts "👤 Creating test user..."
 user = User.create!(
-  id: 1,
   email: "test@test.com",
   password: "123123",
   first_name: "Admin",
   last_name: "User",
   date_of_birth: "2000-01-01",
-  gender: "male"
+  gender: "Male"
 )
 
 today = Time.zone.now.beginning_of_day
@@ -83,3 +82,16 @@ puts "📊 Generating statistics over the past 7 days..."
 end
 
 puts "✅ Done!"
+
+puts "🧪 Creating demo task with 10 seconds duration..."
+
+demo_task = Task.create!(
+  name: "Open the Web Portal",
+  description: "https://www.aircanada.com/home/ca/en/aco/flights",
+  time: 1,
+  user_id: user.id,
+  created_at: Time.zone.now,
+  updated_at: Time.zone.now
+)
+
+puts "🎯 Demo task created: #{demo_task.name} with time #{demo_task.time} seconds"

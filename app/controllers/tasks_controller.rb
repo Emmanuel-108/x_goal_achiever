@@ -4,7 +4,8 @@ class TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
 
   def index
-    @tasks = Task.all
+    # @tasks = Task.all
+    @tasks = current_user.tasks.includes(:subtasks)
 
     @chart_data = Task.group_by_day(:created_at, last: 7)
                       .count

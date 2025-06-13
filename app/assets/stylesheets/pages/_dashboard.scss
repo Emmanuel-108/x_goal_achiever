@@ -173,10 +173,19 @@ html, body {
       color: #555;
     }
 
+    .fa-trash {
+      font-size: 0.85rem;
+      margin: 0px;
+    }
+  }
+
+  .task-details-box {
+    animation: fadeIn 0.4s ease-out;
+
     .button-remove {
       background-color: #112D4E;
-      margin-right: 16px;
-      margin-left: 4px;
+      // margin-right: 16px;
+      // margin-left: 4px;
 
       &:hover {
         background-color: #991b1b; // Slight darker red
@@ -189,13 +198,11 @@ html, body {
       }
     }
 
-    .fa-trash {
-      font-size: 0.85rem;
+    form.button_to {
+      display: inline;
+      margin: 0;
+      padding: 0;
     }
-  }
-
-  .task-details-box {
-    animation: fadeIn 0.4s ease-out;
   }
 }
 

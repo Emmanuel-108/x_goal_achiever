@@ -19,13 +19,14 @@
         <div class="statistics-box">
           <h2 class="text-center">Statistics</h2>
           <div class="graph-placeholder" style="max-width:660px; margin:auto; width: 600px; height: 400px;">
+            <p class="text-align-left chart-label">Created Tasks</p>
             <canvas id="statsChart" width="600" height="400" style="width: 600px; height: 400px;"></canvas>
           </div>
           <%= link_to "📊 Advanced Statistics", statistics_path, class: "button-or mt-4 d-block mx-auto" %>
         </div>
       </div>
 
-      <!-- Right Column -->
+      <!-- Creation Task Panel -->
       <div class="right-column d-flex flex-column" data-controller="task-modal">
         <!-- New Task Panel -->
         <div class="cardform">
@@ -117,18 +118,18 @@
         <div class="recent-tasks-inner">
           <ul class="task-list">
             <% @tasks.order(created_at: :desc).limit(15).each do |task| %>
-              <!-- Task Information + Delete option -->
+              <!-- Task Information + Redo option -->
               <li id="task-<%= task.id %>" class="recent-task-item d-flex justify-content-between align-items-center position-relative">
                 <span><%= task.name %></span>
                 <div class="task-actions">
-                  <!-- Task Details -->
-                  <button class="button-or-xs" type="button" data-bs-toggle="collapse" data-bs-target="#task-details-<%= task.id %>">
-                    <i class="fa fa-ellipsis-h"></i>
+                  <!-- Task Details Expand -->
+                  <button class="button-or-xs button-left" type="button" data-bs-toggle="collapse" data-bs-target="#task-details-<%= task.id %>">
+                    <i class="fa-solid fa-circle-down fa-3x"></i>
                   </button>
 
-                  <!-- Delete -->
-                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, form: { data: { turbo_stream: true } }, class: "button-remove" do %>
-                    <i class="fa fa-trash"></i>
+                  <!-- Redo Task Icon -->
+                  <%= link_to new_task_statistic_path(task_id: task.id), class: "button-or-xs button-right", title: "Focus Panel" do %>
+                    <i class="fa-solid fa-arrow-rotate-right fa-3x"></i>
                   <% end %>
                 </div>
               </li>
@@ -137,7 +138,9 @@
               <li id="task-details-<%= task.id %>" class="collapse task-details-box fade-in bg-light rounded p-3 mb-3">
                 <ul class="list-unstyled small text-muted mb-0">
                   <li><strong>Time:</strong> <%= task.time %> min</li>
-                  <% if task.description.present? %>
+                  <% if task.name == "Open the Web Portal" %>
+                    <li><p><strong>Description:</strong> <%= link_to task.description, task.description, target: "_blank", rel: "noopener" %></p></li>
+                  <% elsif task.description.present? %>
                     <li><strong>Description:</strong> <%= task.description %></li>
                   <% end %>
                   <% if task.subtasks.any? %>
@@ -151,16 +154,16 @@
                   <% end %>
                 </ul>
 
-                <!-- Actions: Edit + Reuse task -->
+                <!-- Actions: Edit + Delete task -->
                 <div class="d-flex justify-content-end mt-2 gap-2">
-                  <!-- Focus Star Icon -->
-                  <%= link_to new_task_statistic_path(task_id: task.id), class: "button-or-xs", title: "Focus Panel" do %>
-                    <i class="fas fa-star text-warning"></i>
-                  <% end %>
                   <!-- Edit Pencil Icon -->
                   <button type="button" class="button-or-xs" data-bs-toggle="modal" data-bs-target="#inlineEditModal-<%= task.id %>">
                     <i class="fa fa-pen"></i>
                   </button>
+                  <!-- Delete Button -->
+                  <%= button_to task_path(task), method: :delete, data: { turbo_confirm: "Delete this task?" }, form: { data: { turbo_stream: true } }, class: "button-remove" do %>
+                    <i class="fa fa-trash"></i>
+                  <% end %>
                 </div>
               </li>
 
@@ -216,97 +219,6 @@
 </footer>
 
 <script>
-function loadStatsChart() {
-  const canvas = document.getElementById("statsChart");
-  if (!canvas) return;
-
-  if (window.statsChartInstance) {
-    try { window.statsChartInstance.destroy(); } catch(e) {}
-    window.statsChartInstance = null;
-  }
-
-  const dataElement = document.getElementById("tasks-data");
-  if (!dataElement) return;
-
-  const today = new Date();
-  const last5Dates = [];
-
-  for (let i = 4; i >= 0; i--) {
-    const d = new Date(today);
-    d.setDate(today.getDate() - i);
-    last5Dates.push(d);
-  }
-
-  const chartData = JSON.parse(dataElement.textContent);
-  const labels = last5Dates.map(d => d.toLocaleDateString(undefined, { weekday: 'long' }));
-  const values = last5Dates.map(d => {
-    const localKey = d.getFullYear() + '-' +
-                    String(d.getMonth() + 1).padStart(2, '0') + '-' +
-                    String(d.getDate()).padStart(2, '0');
-    return chartData[localKey] || 0;
-  });
-
-  // Dégradé bleu-mauve
-  const ctx = canvas.getContext("2d");
-  let gradient = ctx.createLinearGradient(0, 0, 0, 400);
-  gradient.addColorStop(0, "#5f68c3"); // Bleu-mauve
-  gradient.addColorStop(0.5, "#a18cd1"); // Mauve
-  gradient.addColorStop(1, "#4fc3f7"); // Bleu ciel
-
-  window.statsChartInstance = new Chart(ctx, {
-    type: "bar",
-    data: {
-      labels: labels,
-      datasets: [{
-        label: "Created Tasks",
-        data: values,
-        backgroundColor: gradient,
-        borderColor: "#5f68c3",
-        borderWidth: 1.5,
-        borderRadius: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          enabled: true,
-          mode: "index",
-          intersect: false,
-          animation: false
-        },
-        zoom: {
-          zoom: {
-            wheel: { enabled: true },
-            pinch: { enabled: true },
-            mode: "x"
-          },
-          pan: { enabled: true, mode: "x" }
-        }
-      },
-      hover: { mode: "nearest", intersect: true, animationDuration: 0 },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: { color: "#dbe2ef" },
-          ticks: { color: "#112D4E" }
-        },
-        x: {
-          grid: { display: false },
-          ticks: { color: "#112D4E" }
-        }
-      }
-    }
-  });
-}
-document.addEventListener("turbo:load", loadStatsChart);
-document.addEventListener("DOMContentLoaded", loadStatsChart);
-</script>
-
-<script>
 function redirectToDashboard(e) {
   e.preventDefault();
   const form = e.target;
@@ -321,26 +233,21 @@ function redirectToDashboard(e) {
       if (modal) modal.hide();
       window.location.href = "/tasks";
     } else {
-      alert("Une erreur est survenue pendant la sauvegarde.");
+      alert("An error occurred while saving.");
     }
   }).catch(() => {
-    alert("Échec de la requête. Vérifie ta connexion.");
+    alert("Request failed. Please check your connection.");
   });
-
 }
-
 </script>
 
 <script>
-  // Recharge le background Vanta si une modale Bootstrap s'affiche
   document.addEventListener('shown.bs.modal', function () {
-    // Si Vanta n'existe plus, on le recharge
     if (!window.vantaBG) {
       loadVantaBG();
     }
   });
 
-  // Optionnel : Reforce le Vanta après fermeture de modale aussi
   document.addEventListener('hidden.bs.modal', function () {
     if (!window.vantaBG) {
       loadVantaBG();
