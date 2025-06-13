@@ -1,5 +1,5 @@
 .tutorial-page {
-  max-height: calc(100vh - 68px - 62px);
+  min-height: calc(100vh - 68px - 62px - 2rem);
   h1 {
     font-weight: 700;
     font-size: 2.5rem;
