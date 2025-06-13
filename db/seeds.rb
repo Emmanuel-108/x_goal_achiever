@@ -83,7 +83,7 @@ end
 
 puts "✅ Done!"
 
-puts "🧪 Creating demo task with 20 seconds duration..."
+puts "🧪 Creating demo task with 10 seconds duration..."
 
 demo_task = Task.create!(
   name: "Breathe",
